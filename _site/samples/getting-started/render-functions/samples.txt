@@ -1,0 +1,82 @@
+// html render function
+customElements.define("simple-counter", class extends HofHtmlElement {
+    count = 20;
+
+    increment() {
+        this.count++;
+    }
+
+    templates = [
+        () => html`
+            <div>Count: ${this.count}</div>
+            <button onclick="${this.increment}">++</button>
+            <button onclick="${() => this.count--}">--</button>`
+    ];
+})
+
+// list render function
+customElements.define("person-data-list", class extends HofHtmlElement {
+     // Property
+     persons = [new Person("Alex", 21), new Person("Chris", 19), new Person("Mike", 19)];
+
+     // Helper Function
+     getBirthday(person) {
+         let birthday = new Date();
+         birthday.setFullYear(birthday.getFullYear() - person.age);
+         return birthday.toLocaleDateString();
+     }
+
+     edititem = null; // Callback from parent
+
+     deleteitem = null; // Callback from parent
+
+     templates = [
+         list(this.persons, (person, initialInsertIndex, updated) => html`
+             <li>
+                 [${initialInsertIndex}] ${person.name} - ${person.age} years (birthday: ${this.getBirthday(person)})
+                 [<a href="#" onclick="${() => this.edititem(person)}">Edit</a>]
+                 [<a href="#" onclick="${() => this.deleteitem(person)}">Delete</a>]
+                 ${updated ? "(update)" : ""}
+             </li>`, "ul"
+         )
+    ]
+})
+
+// Conditional element rendering
+() => this.count <= 20 ? "Regular render expression" : ""
+
+// Conditional list rendering
+customElements.define("person-data-list", class extends HofHtmlElement {
+    persons = [new Person("Alex", 21), new Person("Chris", 19), new Person("Mike", 19)];
+
+    get _filteredPersons() { return this.persons.filter(p => p.age > 20) } 
+
+    templates = list(this._filteredPersons, (person) => html`
+        <li>
+            ${person.name} - ${person.age} years
+            [<a href="#" onclick="${() => this.edititem(person)}">Edit</a>]
+            [<a href="#" onclick="${() => this.deleteitem(person)}">Delete</a>]
+        </li>`, "ul"
+    )
+})
+
+// Multiple render functions
+customElementstemplates = [
+    () => html`<h2>Filtered list</h2>`,
+    list(this._filteredPersons, (person, index, updated) => html`
+        <li>
+            [${index+1}] ${person.name} - ${person.age} years (updated: ${updated})
+            [<a href="#" onclick="${() => this.edititem(person)}">Edit</a>]
+            [<a href="#" onclick="${() => this.deleteitem(person)}">Delete</a>]
+        </li>`, "ul"
+    ),
+    () => html`<h2>Full list</h2>`,
+    list(this.persons, (person, index, updated) => html`
+        <li>
+            ${person.name} - ${person.age} years (birthday: ${this.getBirthday(person)})
+            [<a href="#" onclick="${() => this.edititem(person)}">Edit</a>]
+            [<a href="#" onclick="${() => this.deleteitem(person)}">Delete</a>]
+            ${updated ? "(update)" : ""}
+        </li>`, "ul"
+    )
+]

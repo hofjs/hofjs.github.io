@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal demo</title>
+    <script type="module">
+        // Inline JS - should be outsourced to external file.      
+        import { HofHtmlElement, html } from "../lib/esm/hof.js";
+
+        customElements.define("main-app", class extends HofHtmlElement {
+            templates = html`<h1>Hello at ${new Date()}</h1>`
+        });
+    </script>
+</head>
+<body>
+    <p>This must be running on a web server to work, for example the vscode live server.</p>
+
+    <main-app></main-app>
+</body>
+</html>

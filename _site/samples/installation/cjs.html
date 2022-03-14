@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal demo</title>
+    <script type="module">
+        // The following code has to be externalized into a javascript file that can be run by nodejs.
+        
+        // window.customElements polyfill must be available to use
+        // component helper to create component for server-side rendering
+
+        const { HofHtmlElement, html } = require("../lib/esm/hof.js");
+
+        customElements.define("main-app", class extends HofHtmlElement {
+            templates = html`<h1>Hello at ${new Date()}</h1>`
+        });
+    </script>
+</head>
+<body>
+    <p>The code provided above must be run within a nodejs environment.</p>
+</body>
+</html>
