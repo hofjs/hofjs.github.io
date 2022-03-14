@@ -1,0 +1,23 @@
+blockquote {
+    background-color: #fdf0ad;
+    border-left: 10px solid #fde157;
+    margin: 0 0 0 0;
+    padding: 0.2em 0em 0.5em 0em;
+
+    p {
+        padding: 0em 1em 0em 1em;
+    }
+
+    p:first-child {
+        text-transform: uppercase;
+    }
+
+    ul {
+        margin-left: 1em;
+        margin-right: 1em;
+    }
+}
+
+div.highlighter-rouge {
+    line-height: 1
+}
