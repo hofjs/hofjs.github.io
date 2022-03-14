@@ -1,0 +1,608 @@
+{"0": {
+    "doc": "About",
+    "title": "About",
+    "content": "Hof.js is a modern framework for the development of Single Page Applications, which breaks with many current approaches and allows a development close to the web standards. It is an open source project of Hof University of Applied Sciences and was created by Prof. Dr. Walter Kern. ",
+    "url": "http://localhost:4000/about.html",
+    "relUrl": "/about.html"
+  },"1": {
+    "doc": "About",
+    "title": "Contact",
+    "content": ". | Organization: https://www.hof-university.de | Mail: hofjs@hof-university.de | Impressum / Imprint: https://www.hof-university.de/impressum.html | . ",
+    "url": "http://localhost:4000/about.html#contact",
+    "relUrl": "/about.html#contact"
+  },"2": {
+    "doc": "CJS build",
+    "title": "CJS build",
+    "content": "CJS (CommonJS) is suitable for server-side JS projects (Node projects). ",
+    "url": "http://localhost:4000/docs/installation/cjs.html",
+    "relUrl": "/docs/installation/cjs.html"
+  },"3": {
+    "doc": "CJS build",
+    "title": "Import statement",
+    "content": "const { HofHtmlElement, html } = require(\"pathToNodeFolderOfApp/node_modules/@hofjs/hofjs/lib/cjs/hof\"); . ",
+    "url": "http://localhost:4000/docs/installation/cjs.html#import-statement",
+    "relUrl": "/docs/installation/cjs.html#import-statement"
+  },"4": {
+    "doc": "CJS build",
+    "title": "Usage sample",
+    "content": "Minimal cjs example . // window.customElements polyfill must be available to use // component helper to create component for server-side rendering const { HofHtmlElement, html } = require(\"../lib/esm/hof.js\"); customElements.define(\"main-app\", class extends HofHtmlElement { templates = html`&lt;h1&gt;Hello at ${new Date()}&lt;/h1&gt;` }); ... ",
+    "url": "http://localhost:4000/docs/installation/cjs.html#usage-sample",
+    "relUrl": "/docs/installation/cjs.html#usage-sample"
+  },"5": {
+    "doc": "Component lifecycle",
+    "title": "Component lifecycle",
+    "content": "Each Hof.js component has a lifecycle that corresponds to that of regular custom elements. Via special methods, you can hook in here and have your own code executed when a component enters the respective state. Particularly important are the following lifecycle methods: . | init(): Called when a HofHtmlElement is attached to the DOM of the web page. Useful for initializations and to register DOM event handlers. | dispose(): Called when a HofHtmlElement is unhooked from the DOM of the web page. Useful to clean up DOM event handlers. | . Let’s look at this concept with an example where our counter from the first examples is automatically incremented by 1 every second. This could be extended to a stopwatch for instance. ",
+    "url": "http://localhost:4000/docs/getting-started/component-lifecycle.html",
+    "relUrl": "/docs/getting-started/component-lifecycle.html"
+  },"6": {
+    "doc": "Component lifecycle",
+    "title": "simple-counter.js",
+    "content": "customElements.define(\"simple-counter\", class extends HofHtmlElement { count = 10; #timerId = 0; init() { this.#timerId = setInterval(() =&gt; this.count++, 1000); } dispose() { clearInterval(this.#timerId); } templates = [ () =&gt; html`&lt;div&gt;Count: ${this.count}&lt;/div&gt;` ]; }) . Note . | Private variables (variables with leading #) can be used in lifecycle hooks, but are not currently supported within templates. | If you want to express a variable as private, but need to refer to it within a template, use _variableName instead. This won’t give you true private variables, but you express the intent that no one should change them directly for consistency. | . The following webpage can be used to render our updated counter component. ",
+    "url": "http://localhost:4000/docs/getting-started/component-lifecycle.html#simple-counterjs",
+    "relUrl": "/docs/getting-started/component-lifecycle.html#simple-counterjs"
+  },"7": {
+    "doc": "Component lifecycle",
+    "title": "simple-counter.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Simple counter app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"simple-counter.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Simple counter app&lt;/h1&gt; &lt;simple-counter&gt;&lt;/simple-counter&gt; &lt;/body&gt; &lt;/html&gt; . If we open our web page in a browser, we should get the following rendering output: . ",
+    "url": "http://localhost:4000/docs/getting-started/component-lifecycle.html#simple-counterhtml",
+    "relUrl": "/docs/getting-started/component-lifecycle.html#simple-counterhtml"
+  },"8": {
+    "doc": "Component lifecycle",
+    "title": "Rendered webpage",
+    "content": "Another example shows the use of init() to asynchronously download data from a JSON service via fetch API. This involves updating a component property in the callback and subsequently re-rendering the dependent part of the UI. ",
+    "url": "http://localhost:4000/docs/getting-started/component-lifecycle.html#rendered-webpage",
+    "relUrl": "/docs/getting-started/component-lifecycle.html#rendered-webpage"
+  },"9": {
+    "doc": "Component lifecycle",
+    "title": "todo-list.js",
+    "content": "customElements.define(\"todo-list\", class extends HofHtmlElement { todos = []; constructor() { super(\"ul\"); } async init() { this.todos = await fetch('https://jsonplaceholder.typicode.com/todos?_limit=10') .then(response =&gt; response.json()); } templates = () =&gt; this.todos.map(todo =&gt; html` &lt;li&gt;${todo.title} (${todo.completed ? \"completed\" : \"not completed\"})&lt;/li&gt;` ).join(\"\") }) . Note . As an alternative to init you could call fetch from a constructor of your component: . | This could improve performance, because it happens earlier than init(). However, constructors cannot be marked as async. | This means that you cannot use await and must use code like the one shown below: constructor() { super(\"ul\"); fetch('https://jsonplaceholder.typicode.com/todos?_limit=10') .then(response =&gt; response.json()).then(todos =&gt; this.todos = todos); } . | . The following webpage can be used to render our todo list component. ",
+    "url": "http://localhost:4000/docs/getting-started/component-lifecycle.html#todo-listjs",
+    "relUrl": "/docs/getting-started/component-lifecycle.html#todo-listjs"
+  },"10": {
+    "doc": "Component lifecycle",
+    "title": "todo-list.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Todo list app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"todo-list.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Todo list app&lt;/h1&gt; &lt;todo-list&gt;&lt;/todo-list&gt; &lt;/body&gt; &lt;/html&gt; . If we open our web page in a browser, we should get the following rendering output: . ",
+    "url": "http://localhost:4000/docs/getting-started/component-lifecycle.html#todo-listhtml",
+    "relUrl": "/docs/getting-started/component-lifecycle.html#todo-listhtml"
+  },"11": {
+    "doc": "Component lifecycle",
+    "title": "Rendered webpage",
+    "content": "And that’s it. You have just asynchronously downloaded data from a json service and rendered it in html. Important . | The call to map to render a list should only be used to render output that is not going to be updated! This means it should not depend on properties that are going to change. This is due to the fact that map does a complete rendering. | Instead, the render function list() should be used as default, which supports an observability for array elements, whereby only the exact parts of the UI are re-rendered that are affected by an array change, e.g. the part of the UI that visualizes the newly added, edited or deleted element of an array. | This render function is going to be discussed in another part of this guide. | . ",
+    "url": "http://localhost:4000/docs/getting-started/component-lifecycle.html#rendered-webpage-1",
+    "relUrl": "/docs/getting-started/component-lifecycle.html#rendered-webpage-1"
+  },"12": {
+    "doc": "Component styles",
+    "title": "Component styles",
+    "content": "In addition to website-global CSS, CSS styles that only affect the respective HofHtmlElement component are also supported. They can simple be provided by overriding the styles property in the component class. For example, in the following component, the text in the rendered input field is displayed in blue. customElements.define(\"person-data-input\", class extends HofHtmlElement { value = \"\"; label = \"\"; change = null; constructor() { super(\"label\") } styles = css` input { color: blue; } `; templates = html` ${this.label}: &lt;input value=\"${this.value}\" onchange=\"${this.change}\" /&gt; ` }) . Note . | Within styles, you can reference properties and specify arbitrary javascript expressions, such as input { color: ${this.someProperty} }. | However, properties and expressions used within styles get only evaluated once. | If you want to change styling, assign different css classes or styles to elements within templates by referencing properties, such as &lt;input class=\"${this.someProperty}\" /&gt;. This gets automatically observed like any other property referenced within templates. | . ",
+    "url": "http://localhost:4000/docs/getting-started/component-styles.html",
+    "relUrl": "/docs/getting-started/component-styles.html"
+  },"13": {
+    "doc": "Derived properties",
+    "title": "Derived properties",
+    "content": "Derived properties (computed properties) are recalculated whenever one of the dependent properties changes. They are specified as a property with only a getter that references one or more other regular properties. To illustrate this concept, let’s extend our simple counter component so that the duplicate and inverted values are also displayed and updated whenever the counter is changed. ",
+    "url": "http://localhost:4000/docs/getting-started/derived-properties.html",
+    "relUrl": "/docs/getting-started/derived-properties.html"
+  },"14": {
+    "doc": "Derived properties",
+    "title": "simple-counter.js",
+    "content": "customElements.define(\"simple-counter\", class extends HofHtmlElement { count = 10; get doubled() { return this.count * 2; } increment() { this.count++; } templates = html` &lt;div&gt;Count: ${this.count}&lt;/div&gt; &lt;div&gt;Inverse count: ${-this.count}&lt;/div&gt; &lt;div&gt;Doubled count: ${this.doubled}&lt;/div&gt; &lt;button onclick=\"${this.increment}\"&gt;++&lt;/button&gt; &lt;button onclick=\"${() =&gt; this.count--}\"&gt;--&lt;/button&gt; ` }) . This includes the following changes compared to our earlier implementation: . | We extended our component template to additionally output the inverse value of the counter and the doubled value of the counter. | As you can see, you can specify arbitrary expressions in the template, e.g. the inversion of the counter. For more complex logic, however, you should put it in a separate property, which we did for doubled. This is simply calculated by multiplying the value of the property count by 2. | . Now, when a user clicks on one of the buttons, the following actions are triggered: . | The value of the count variable is increased or decreased as it was in the earlier implementation. As a consequence the parts of the UI that reference this variable in the template are automatically updated. In this example, this is the content of the first and second div elements. | Since the doubled property is not an independent property but depends on count, it is also automatically recalculated because it is also referenced in the template (otherwise it would not be recalculated for performance reasons). This in turn automatically re-renders the third div because it references the doubled property. | . Now lets use that updated counter in a web page. This is not different to our previous html markup. ",
+    "url": "http://localhost:4000/docs/getting-started/derived-properties.html#simple-counterjs",
+    "relUrl": "/docs/getting-started/derived-properties.html#simple-counterjs"
+  },"15": {
+    "doc": "Derived properties",
+    "title": "simple-counter.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Simple counter app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"simple-counter.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Simple counter app&lt;/h1&gt; &lt;simple-counter&gt;&lt;/simple-counter&gt; &lt;/body&gt; &lt;/html&gt; . This gives us the following rendering output: . ",
+    "url": "http://localhost:4000/docs/getting-started/derived-properties.html#simple-counterhtml",
+    "relUrl": "/docs/getting-started/derived-properties.html#simple-counterhtml"
+  },"16": {
+    "doc": "Derived properties",
+    "title": "Rendered webpage",
+    "content": "And that’s it. You have just created your first Hof.js component that uses derived properties! . Note . Derived properties are a powerful construct to automatically update properties that depend on other properties. They are defined by writing a readonly property that has only a getter. If you don’t need automatic updates, but only a simple helper method (such as toNumberSystem in the stateful components example from earlier) or an event handler, don’t use derived properties! Write a simple method instead! . ",
+    "url": "http://localhost:4000/docs/getting-started/derived-properties.html#rendered-webpage",
+    "relUrl": "/docs/getting-started/derived-properties.html#rendered-webpage"
+  },"17": {
+    "doc": "ESM build",
+    "title": "ESM build",
+    "content": "ESM (ECMAScript modules / es modules) is the standard for client-side JS projects. ",
+    "url": "http://localhost:4000/docs/installation/esm.html",
+    "relUrl": "/docs/installation/esm.html"
+  },"18": {
+    "doc": "ESM build",
+    "title": "Import statement",
+    "content": "import { HofHtmlElement, html } from \"pathToNodeFolderOfApp/node_modules/@hofjs/hofjs/lib/esm/hof\"; . ",
+    "url": "http://localhost:4000/docs/installation/esm.html#import-statement",
+    "relUrl": "/docs/installation/esm.html#import-statement"
+  },"19": {
+    "doc": "ESM build",
+    "title": "Usage sample",
+    "content": "Minimal esm example . &lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Minimal demo&lt;/title&gt; &lt;script type=\"module\"&gt; // Inline JS - should be outsourced to external file. import { HofHtmlElement, html } from \"../lib/esm/hof.js\"; customElements.define(\"main-app\", class extends HofHtmlElement { templates = html`&lt;h1&gt;Hello at ${new Date()}&lt;/h1&gt;` }); &lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;p&gt;This must be running on a web server to work, for example the vscode live server.&lt;/p&gt; &lt;main-app&gt;&lt;/main-app&gt; &lt;/body&gt; &lt;/html&gt; . ",
+    "url": "http://localhost:4000/docs/installation/esm.html#usage-sample",
+    "relUrl": "/docs/installation/esm.html#usage-sample"
+  },"20": {
+    "doc": "Hashtag routes",
+    "title": "Hashtag routes",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Personlist app (function style)&lt;/title&gt; &lt;script src=\"../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"lib/nomodule/hofrouter.js\"&gt;&lt;/script&gt; &lt;script&gt; class GlobalApp extends HofHtmlElement { constructor() { super(); HofRouter.configRoutes(this._shadow, 'router', { pageOverview: { url: \"#page-overview\", component: PageOverview }, pageDetails: { url: \"#page-details/:id\", component: PageDetails, aliases: [\"#pagedetails/:id\", \"#details/:id\"] }, pageOverview2: { url: \"#overview\", redirect: \"#page-overview\" }, default: { url: \"*\", redirect: \"router:pageOverview\" } }); } templates = html` &lt;h1&gt;Routing app (hashtag routes)&lt;/h1&gt; &lt;a href=\"#page-overview\"&gt;Overview&lt;/a&gt; &lt;a href=\"#page-details/1?param1=Hello&amp;param2=World\"&gt;Details&lt;/a&gt; &lt;a href=\"#pagedetails/2?param1=Hello&amp;param2=World\"&gt;Details 2&lt;/a&gt; &lt;a href=\"#details/3?param1=Hello&amp;param2=World\"&gt;Details 3&lt;/a&gt; &lt;a href=\"router:pageDetails(id=4, param1=Hello, param2=World)\"&gt;Details 4&lt;/a&gt; &lt;div id=\"router\"&gt;&lt;/div&gt; ` } customElements.define(\"global-app\", GlobalApp); class PageOverview extends HofHtmlElement { count = 10; beforeRouting(newValue, oldValue) { // return false; } afterRouting(newValue, oldValue) { } templates = html` &lt;h1&gt;Overview page&lt;/h1&gt;&lt;div&gt;${new Date()}&lt;/div&gt; ` } customElements.define(\"page-overview\", PageOverview); class PageDetails extends HofHtmlElement { id = 0; constructor() { super(); HofRouter.configRoutes(this._shadow, 'subRouter', { tab1: { url: \"#page-details/:id/tab1\", component: PageDetailsTab, params: { tabId: 1 } }, tab2: { url: \"#page-details/:id/tab2\", component: PageDetailsTab, params: { tabId: 2 } }, }); } beforeRouting(newValue, oldValue) { // return false; } afterRouting(newValue, oldValue) { } templates = html` &lt;h1&gt;Details page&lt;/h1&gt; &lt;div&gt;Specified id: ${this.id}&lt;/div&gt; &lt;div&gt;Specified url: ${HofRouter.current.url}&lt;/div&gt; &lt;div&gt;Specified query: ${HofRouter.current.query}&lt;/div&gt; &lt;ul&gt; &lt;li&gt;param1: ${HofRouter.current.params.param1 || \"-\"}&lt;/li&gt; &lt;li&gt;param2: ${HofRouter.current.params.param2 || \"-\"}&lt;/li&gt; &lt;/ul&gt; &lt;h2&gt;Nested routing&lt;/h2&gt; &lt;a href=\"#page-details/${this.id}/tab1\"&gt;Tab 1&lt;/a&gt; &lt;a href=\"#page-details/${this.id}/tab2\"&gt;Tab 2&lt;/a&gt; &lt;button onclick=\"${() =&gt; HofRouter.go(-1)}\"&gt;Back&lt;/button&gt; &lt;button onclick=\"${() =&gt; HofRouter.push('#page-overview')}\"&gt;Overview&lt;/button&gt; &lt;a href=\"router:go(-1)\"&gt;Back&lt;/a&gt; &lt;a href=\"router:push('#pageOverview')\"&gt;Overview&lt;/a&gt; &lt;div id=\"subRouter\"&gt;&lt;/div&gt; ` } customElements.define(\"page-details\", PageDetails); class PageDetailsTab extends HofHtmlElement { tabId = 0; templates = html` &lt;h1&gt;Tab ${this.tabId}&lt;/h1&gt; &lt;div&gt;${new Date()}&lt;/div&gt; ` } customElements.define(\"page-details-tab\", PageDetailsTab) &lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;global-app&gt;&lt;/global-app&gt; &lt;/body&gt; &lt;/html&gt; . ",
+    "url": "http://localhost:4000/docs/routing/hashtag-routes.html",
+    "relUrl": "/docs/routing/hashtag-routes.html"
+  },"21": {
+    "doc": "Hashtag routes",
+    "title": "Rendered webpage",
+    "content": " ",
+    "url": "http://localhost:4000/docs/routing/hashtag-routes.html#rendered-webpage",
+    "relUrl": "/docs/routing/hashtag-routes.html#rendered-webpage"
+  },"22": {
+    "doc": "Hello world",
+    "title": "Hello world",
+    "content": "For starters, a small component is to be written that greets a user and tells him the current date. First lets create a file called my-greeter.js with the following code: . ",
+    "url": "http://localhost:4000/docs/getting-started/hello-world.html",
+    "relUrl": "/docs/getting-started/hello-world.html"
+  },"23": {
+    "doc": "Hello world",
+    "title": "my-greeter.js",
+    "content": "customElements.define(\"my-greeter\", class extends HofHtmlElement { name = \"world\" templates = html` &lt;h1&gt;Hello ${this.name}!&lt;/h1&gt; &lt;p&gt;It's ${new Date()}.&lt;/p&gt; ` }) . This defines a new component named my-greeter: . | Within templates, we can specify a html fragment that includes arbitrary javascript expressions. | In this component we defined a property called name and provided the default value \"world\". It is important to understand that all public properties get exposed as attributes and properties of the component. This means they can be provided from html markup and set by javascript code. | . Important . | The templates property accepts a simple html string with arbitrary JS expressions as well as calls to render functions like item() or list(). | These will be covered in detail in a later section of this guide. | . Now lets use that newly created tag in a simple web page. ",
+    "url": "http://localhost:4000/docs/getting-started/hello-world.html#my-greeterjs",
+    "relUrl": "/docs/getting-started/hello-world.html#my-greeterjs"
+  },"24": {
+    "doc": "Hello world",
+    "title": "hello-world.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Hello world app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"my-greeter.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;my-greeter&gt;&lt;/my-greeter&gt; &lt;my-greeter name=\"Alex\"&gt;&lt;/my-greeter&gt; &lt;/body&gt; &lt;/html&gt; . In this example, we use our component two times: . | The first time, we specify it without its attribute name. This means the default world is used for rendering. | The second time, we provide the value \"Alex\" for the attribute name. As a consequence, Alex is outputted. | . Note . Hof.js components are are W3C standard based custom elements. As a consequence their tag names must contain a dash. In other words, tag names have to begin with a prefix such as app- or my-. You cannot define new components with a one-word tag name such as greeter! . If we open our web page in a browser, we should get the following rendering output: . ",
+    "url": "http://localhost:4000/docs/getting-started/hello-world.html#hello-worldhtml",
+    "relUrl": "/docs/getting-started/hello-world.html#hello-worldhtml"
+  },"25": {
+    "doc": "Hello world",
+    "title": "Rendered webpage",
+    "content": "And that’s it. You have just created your first Hof.js component that can be used in any webpage and with any other web framework! . Note . We don’t need to provide any hook elements like other frameworks do to render our component because Hof.js components are W3C standard based custom elements. Each Hof.js component can directly be used by its tag name in any web page (or in templates of other HofHtmlElement components). ",
+    "url": "http://localhost:4000/docs/getting-started/hello-world.html#rendered-webpage",
+    "relUrl": "/docs/getting-started/hello-world.html#rendered-webpage"
+  },"26": {
+    "doc": "Routing",
+    "title": "Routing",
+    "content": "Hof.js router is a modern routing framework and part of Hof.js. It is an open source project of Hof University of Applied Sciences and was created by Prof. Dr. Walter Kern. ",
+    "url": "http://localhost:4000/docs/routing/",
+    "relUrl": "/docs/routing/"
+  },"27": {
+    "doc": "Routing",
+    "title": "Key features",
+    "content": "This framework has the following advantages, among others: . | Regular routes and hashtag based routes are supported. | Simple plain html and js because no special components or attributes are required. Regular links can be used and named routes can be called by using a special router protocol. | Routing hooks are supported. This makes it possible to call code before or after routing has occured. It also allows to cancel routing based on conditions - a concept known as guards in other frameworks. | Redirects and aliases are supported. Both delegate to another component. However, redirects change the URL, aliases keep the URL. | Nested routing can be easily achieved to support complex routing scenarios. | . These and other concepts will be explained step by step in this guide. Note . All samples in this guide are interactive. This means you can interact with the rendered ui! . ",
+    "url": "http://localhost:4000/docs/routing/#key-features",
+    "relUrl": "/docs/routing/#key-features"
+  },"28": {
+    "doc": "Getting started",
+    "title": "Getting started",
+    "content": "Hof.js is based on web components. These are a group of W3C standards that allow the creation of new HTML elements. Hof.js simplifies their implementation extremely and offers many additional features like deep observability out-of-the-box. Hof.js supports . | enriching an existing website by implementing individual parts using Hof.js components or | building a complete app based on nested Hof.js components. | . These and other concepts will be explained step by step in this guide. Note . All samples in this guide are interactive. This means you can interact with the rendered ui! . ",
+    "url": "http://localhost:4000/docs/getting-started/",
+    "relUrl": "/docs/getting-started/"
+  },"29": {
+    "doc": "Modern development",
+    "title": "Modern development",
+    "content": "As shown in the previous chapters, Hof.js provides a quickstart to web development by using the nomodule variant of the library: . | You can include Hof.js and JS files of your components in a web page using separate script tags. | This can be useful to enrich an existing website by implementing parts using Hof.js components. | . However, if you want to build a complete app based on Hof.js, you should use modularized JavaScript instead. Also, in more complex applications, you want optimal IDE support including autocomplete for regular elements and HofHtmlElement components including their properties. You can also test a Hof.js application interactively by changing the underlying data model in the browser. In doing so, you can watch the changes to the properties of the Hof.js components and the corresponding UI updates live. All this is also possible with Hof.js and will be examined in more detail in the following sections. ",
+    "url": "http://localhost:4000/docs/modern-development/",
+    "relUrl": "/docs/modern-development/"
+  },"30": {
+    "doc": "Overview",
+    "title": "Overview",
+    "content": "Hof.js is a modern framework for the development of Single Page Applications. It is an open source project of Hof University of Applied Sciences and was created by Prof. Dr. Walter Kern. ",
+    "url": "http://localhost:4000/",
+    "relUrl": "/"
+  },"31": {
+    "doc": "Overview",
+    "title": "Key features",
+    "content": "This framework has the following advantages, among others: . | Extremely simple implementation of apps based on Web Components and other web standards. | Deep state observability, including arrays and nested properties, i.e. persons.push(newPerson) or person.address.name=newName are recognized and re-render only depending parts of the UI. | Incremental enhancement of existing web applications because individual components can be added to any web application created with another framework, as they are just web components. | Stores can simply be implemented by using pure JS instead of special libraries because the deep observability functionality of this frameworks makes concepts like that obsolete. | Easy start of development, since no transpiler, CLI or tool is needed. It is enough to include the framework which is only a few KB in size. | IDEs provide best support even without extensions/plugins since the code is pure JS. | . ",
+    "url": "http://localhost:4000/#key-features",
+    "relUrl": "/#key-features"
+  },"32": {
+    "doc": "Overview",
+    "title": "License",
+    "content": "Hof.js is MIT licensed. ",
+    "url": "http://localhost:4000/#license",
+    "relUrl": "/#license"
+  },"33": {
+    "doc": "Overview",
+    "title": "Getting started",
+    "content": "This documentation includes a guide that leads you step by step through the main concepts of Hof.js. Getting started . Contribution . Contact us if you are a student of Hof University of Applied Sciences and would like to contribute: . | Organization: https://www.hof-university.de | Mail: hofjs@hof-university.de | Impressum / Imprint: https://www.hof-university.de/impressum.html | . ",
+    "url": "http://localhost:4000/#getting-started",
+    "relUrl": "/#getting-started"
+  },"34": {
+    "doc": "Installation",
+    "title": "Installation",
+    "content": "Hof.js can be installed by using npm. npm install @hofjs/hofjs . This package contains builds in esm, cjs and nomodules formats. While cjs is suitable for server-side JS projects (Node projects), esm is the standard for client-side JS projects. To support older browsers without JS module support or to realize a small web application without requiring JavaScript modules, the nomodules variant can be used. The following examples show the different import alternatives. import { HofHtmlElement, html } from \"pathToNodeFolderOfApp/node_modules/@hofjs/hofjs/lib/esm/hof\"; . const { HofHtmlElement, html } = require(\"pathToNodeFolderOfApp/node_modules/@hofjs/hofjs/lib/cjs/hof\"); . &lt;script src=\"pathToNodeFolderOfApp/node_modules/@hofjs/hofjs/lib/nomodule/hof.js\"&gt;&lt;/script&gt; . Usage examples for the different package formats can be found in the links below. There is also a starter template available for new projects that includes all required packages and supports Hot Module Reloading. Hof.js also supports autocomplete for your HofHtmlElement components including templates and styles within Visual Studio Code. Follow the step by step guide to setup vscode to get the best developer experience. ",
+    "url": "http://localhost:4000/docs/installation/",
+    "relUrl": "/docs/installation/"
+  },"35": {
+    "doc": "Interactive app tests",
+    "title": "Interactive app tests",
+    "content": "Since Hof.js, unlike other frameworks, does not compare UI snapshots, but the data itself is reactive, it is possible to modify JavaScript (store) objects used in Hof.js components directly from the browser and observe the corresponding UI updates. This includes both simple property assignments, array operations such as push and also array indexer accesses. To demonstrate this, the code of an app that uses complex derived properties will be shown below. Afterwards, it will be shown how to test changes in the data in the browser. // debugging aktivieren . Lets update our person list app from earlier to use modular js. ",
+    "url": "http://localhost:4000/docs/modern-development/interactive-app-tests.html",
+    "relUrl": "/docs/modern-development/interactive-app-tests.html"
+  },"36": {
+    "doc": "Interactive app tests",
+    "title": "person-list-app.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Personlist app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script&gt; class Person { constructor(name = \"\", age = \"\") { this.id = (name &amp;&amp; age) ? Person.counter++ : \"\"; this.name = name; this.age = age; } static counter = 1; } &lt;/script&gt; &lt;script&gt; const personStore = { selected: new Person(), persons: [new Person(\"Alex\", 21), new Person(\"Chris\", 19), new Person(\"Mike\", 19)], changeName(value) { this.selected.name = value; }, changeAge(event) { this.selected.age = event.target.value; }, create() { this.selected = new Person(); }, edit(person) { this.selected = { ...person }; }, remove(person) { this.persons.splice(this.findIndex(person), 1); this.create(); }, save() { if (this.persons.some(p =&gt; p.id == this.selected.id)) // Existing person? this.persons.splice(this.findIndex(this.selected), 1, this.selected); else this.persons.push(new Person(this.selected.name, this.selected.age)); this.create(); }, findIndex(person) { return this.persons.findIndex(p =&gt; p.id == person.id); }, } class PersonDataInput extends HofHtmlElement { value = \"\"; label = \"\"; change = null; constructor() { super(\"label\"); } templates = html` ${this.label}: &lt;input value=\"${this.value}\" onchange=\"${this.change}\" /&gt; ` } customElements.define(\"person-data-input\", PersonDataInput) class PersonDataList extends HofHtmlElement { persons = []; get _filteredPersons() { return this.persons.filter(p =&gt; p.age &gt; 20) } edititem = null; deleteitem = null; templates = [ item(() =&gt; html`&lt;h2&gt;Full list&lt;/h2&gt;`), list(this.persons, (person, index, updated) =&gt; html` &lt;li&gt; ${person.name} - ${person.age} years [&lt;a href=\"#\" onclick=\"${() =&gt; this.edititem(person)}\"&gt;Edit&lt;/a&gt;] [&lt;a href=\"#\" onclick=\"${() =&gt; this.deleteitem(person)}\"&gt;Delete&lt;/a&gt;] ${updated ? \"(update)\" : \"\"} &lt;/li&gt;`, \"ul\" ), item(() =&gt; html`&lt;h2&gt;Filtered list&lt;/h2&gt;`), list(this._filteredPersons, (person, index, updated) =&gt; html` &lt;li&gt; [${index+1}] ${person.name} - ${person.age} years (updated: ${updated}) [&lt;a href=\"#\" onclick=\"${() =&gt; this.edititem(person)}\"&gt;Edit&lt;/a&gt;] [&lt;a href=\"#\" onclick=\"${() =&gt; this.deleteitem(person)}\"&gt;Delete&lt;/a&gt;] &lt;/li&gt;`, \"ul\" ) ]; } customElements.define(\"person-data-list\", PersonDataList) class PersonData extends HofHtmlElement { personStore = personStore; constructor() { super(); fetch('https://jsonplaceholder.typicode.com/todos?_limit=10') .then(response =&gt; response.json()).then(list =&gt; list.map(todo =&gt; new Person(todo.title, todo.id))).then(x =&gt; this.personStore.persons = x); } templates = html` &lt;fieldset&gt; &lt;person-data-input label=\"Name\" value=\"${this.personStore.selected.name}\" change=\"${(event) =&gt; this.personStore.changeName(event.target.value)}\"&gt;&lt;/person-data-input&gt; &lt;person-data-input label=\"Age\" value=\"${this.personStore.selected.age}\" change=\"${(event) =&gt; this.personStore.changeAge(event)}\"&gt;&lt;/person-data-input&gt; &lt;button onclick=\"${this.personStore.save}\"&gt;Save&lt;/button&gt; &lt;/fieldset&gt; ${this.personStore.persons.length} persons in list &lt;person-data-list persons=\"${this.personStore.persons}\" edititem=\"${this.personStore.edit}\" deleteitem=\"${this.personStore.remove}\"&gt;&lt;/person-data-list&gt; &lt;person-data-list persons=\"${this.personStore.persons.filter(x =&gt; x.name.includes('de'))}\" edititem=\"${this.personStore.edit}\" deleteitem=\"${this.personStore.remove}\"&gt;&lt;/person-data-list&gt; &lt;a href=\"#\" onclick=\"${this.personStore.create}\"&gt;Create&lt;/a&gt; ` } customElements.define(\"person-data\", PersonData) &lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Personlist app&lt;/h1&gt; &lt;person-data&gt;&lt;/person-data&gt; &lt;/body&gt; &lt;/html&gt; . Next, lets open Chrome developer tools by pressing F12. Type the depicted statements and watch the changes in the UI. ",
+    "url": "http://localhost:4000/docs/modern-development/interactive-app-tests.html#person-list-apphtml",
+    "relUrl": "/docs/modern-development/interactive-app-tests.html#person-list-apphtml"
+  },"37": {
+    "doc": "Interactive app tests",
+    "title": "Initial rendering",
+    "content": ". ",
+    "url": "http://localhost:4000/docs/modern-development/interactive-app-tests.html#initial-rendering",
+    "relUrl": "/docs/modern-development/interactive-app-tests.html#initial-rendering"
+  },"38": {
+    "doc": "Interactive app tests",
+    "title": "Rendering after array push",
+    "content": ". ",
+    "url": "http://localhost:4000/docs/modern-development/interactive-app-tests.html#rendering-after-array-push",
+    "relUrl": "/docs/modern-development/interactive-app-tests.html#rendering-after-array-push"
+  },"39": {
+    "doc": "Interactive app tests",
+    "title": "Rendering after array element change",
+    "content": ". ",
+    "url": "http://localhost:4000/docs/modern-development/interactive-app-tests.html#rendering-after-array-element-change",
+    "relUrl": "/docs/modern-development/interactive-app-tests.html#rendering-after-array-element-change"
+  },"40": {
+    "doc": "Interactive app tests",
+    "title": "Rendering after object property update",
+    "content": ". ",
+    "url": "http://localhost:4000/docs/modern-development/interactive-app-tests.html#rendering-after-object-property-update",
+    "relUrl": "/docs/modern-development/interactive-app-tests.html#rendering-after-object-property-update"
+  },"41": {
+    "doc": "Interactive app tests",
+    "title": "Rendering after simple property update",
+    "content": ". ",
+    "url": "http://localhost:4000/docs/modern-development/interactive-app-tests.html#rendering-after-simple-property-update",
+    "relUrl": "/docs/modern-development/interactive-app-tests.html#rendering-after-simple-property-update"
+  },"42": {
+    "doc": "Interactive app tests",
+    "title": "Rendering after simple property update 2",
+    "content": ". ",
+    "url": "http://localhost:4000/docs/modern-development/interactive-app-tests.html#rendering-after-simple-property-update-2",
+    "relUrl": "/docs/modern-development/interactive-app-tests.html#rendering-after-simple-property-update-2"
+  },"43": {
+    "doc": "Interactive app tests",
+    "title": "Rendering after call to store method",
+    "content": ". ",
+    "url": "http://localhost:4000/docs/modern-development/interactive-app-tests.html#rendering-after-call-to-store-method",
+    "relUrl": "/docs/modern-development/interactive-app-tests.html#rendering-after-call-to-store-method"
+  },"44": {
+    "doc": "Interactive app tests",
+    "title": "Rendered webpage",
+    "content": " ",
+    "url": "http://localhost:4000/docs/modern-development/interactive-app-tests.html#rendered-webpage",
+    "relUrl": "/docs/modern-development/interactive-app-tests.html#rendered-webpage"
+  },"45": {
+    "doc": "List rendering",
+    "title": "List rendering",
+    "content": "Hof.js supports deep observability for arrays. This means that the addition, update or deletion of an array element is observed and the corresponding parts of the user interface are automatically updated - all without the overhead of a virtual Dom. To familiarize ourselves with this concept, let’s implement a small app that shows a list of persons and supports all CRUD operations. The finished app should look and work like the one shown below. ",
+    "url": "http://localhost:4000/docs/getting-started/list-rendering.html",
+    "relUrl": "/docs/getting-started/list-rendering.html"
+  },"46": {
+    "doc": "List rendering",
+    "title": "Rendered webpage",
+    "content": "First, let’s implement a simple class to hold a person’s data. ",
+    "url": "http://localhost:4000/docs/getting-started/list-rendering.html#rendered-webpage",
+    "relUrl": "/docs/getting-started/list-rendering.html#rendered-webpage"
+  },"47": {
+    "doc": "List rendering",
+    "title": "person.js",
+    "content": "class Person { constructor(name = \"\", age = \"\") { this.id = (name &amp;&amp; age) ? Person.counter++ : \"\"; this.name = name; this.age = age; } static counter = 1; } . Next, we implement a component person-data to render our app. It contains a component of type person-list to render a list of persons and ui elements to perform all CRUD operations on the list elements. The editing area consists of two components of type person-input and allows the user to enter data for a new person to be added or to update the data of an already selected person. ",
+    "url": "http://localhost:4000/docs/getting-started/list-rendering.html#personjs",
+    "relUrl": "/docs/getting-started/list-rendering.html#personjs"
+  },"48": {
+    "doc": "List rendering",
+    "title": "person-data.js",
+    "content": "customElements.define(\"person-data\", class extends HofHtmlElement { selected = new Person(); persons = [new Person(\"Alex\", 21), new Person(\"Chris\", 19), new Person(\"Mike\", 19)]; create() { this.selected = new Person(); } edit(person) { this.selected = { ...person }; } // Copy object to avoid live update on text change remove(person) { this.persons.splice(this.findIndex(person), 1); this.create(); } save() { if (this.selected.id) // Existing person? this.persons.splice(this.findIndex(this.selected), 1, this.selected); else this.persons.push(new Person(this.selected.name, this.selected.age)); this.create(); } findIndex(person) { return this.persons.findIndex(p =&gt; p.id == person.id); } templates = [ () =&gt; html` &lt;fieldset&gt; &lt;person-data-input label=\"Name\" value=\"${this.selected.name}\" change=\"${(e) =&gt; this.selected.name = e.target.value}\"&gt;&lt;/person-data-input&gt; &lt;person-data-input label=\"Age\" value=\"${this.selected.age}\" change=\"${(e) =&gt; this.selected.age = e.target.value}\"&gt;&lt;/person-data-input&gt; &lt;button onclick=\"${this.save}\"&gt;Save&lt;/button&gt; &lt;/fieldset&gt; ${this.persons.length} persons in list &lt;person-data-list persons=\"${this.persons}\" edititem=\"${this.edit}\" deleteitem=\"${this.remove}\"&gt;&lt;/person-data-list&gt; &lt;a href=\"#\" onclick=\"${this.create}\"&gt;Create&lt;/a&gt; ` ] }) . The above class contains the persons and selected properties, which represent the list of all persons to be displayed and the currently selected person. Additionally, the class contains several methods that implement CRUD operations: . | The hyperlink at the end of the template calls the method create. Here the selected property is set to a new person instance. Since this.selected.name or this.selected.age is passed to the respective person-data-input component in the template, a new empty person is rendered in the editing area. | The edit and remove methods, on the other hand, are passed down to the person-data-list component. If the edit or delete link of a person rendered by the person-data-list component is pressed, the mentioned methods are called with the affected person as parameter: . | In edit the selected property is set to the person whose edit link was clicked in the list, so that their data is displayed in the edit area. | In remove via array splice the selected person is deleted from persons. | . | Method save adds a new person with data from selected to array persons or updates an array entry if an existing person was selected earlier. Finally create() empties the editing area and enables the entry of a new person. | The findIndex method is a helper method to find a person in the array by its ID and return its index. | . Now lets take a look at the component person-list. ",
+    "url": "http://localhost:4000/docs/getting-started/list-rendering.html#person-datajs",
+    "relUrl": "/docs/getting-started/list-rendering.html#person-datajs"
+  },"49": {
+    "doc": "List rendering",
+    "title": "person-list.js",
+    "content": "customElements.define(\"person-data-list\", class extends HofHtmlElement { // Property persons = [new Person(\"Alex\", 21), new Person(\"Chris\", 19), new Person(\"Mike\", 19)]; // Helper Function getBirthday(person) { let birthday = new Date(); birthday.setFullYear(birthday.getFullYear() - person.age); return birthday.toLocaleDateString(); } edititem = null; // Callback from parent deleteitem = null; // Callback from parent templates = list(this.persons, (person, initialInsertIndex, updated) =&gt; html` &lt;li&gt; [${initialInsertIndex}] ${person.name} - ${person.age} years (birthday: ${this.getBirthday(person)}) [&lt;a href=\"#\" onclick=\"${() =&gt; this.edititem(person)}\"&gt;Edit&lt;/a&gt;] [&lt;a href=\"#\" onclick=\"${() =&gt; this.deleteitem(person)}\"&gt;Delete&lt;/a&gt;] ${updated ? \"(update)\" : \"\"} &lt;/li&gt;`, \"ul\" ) }) . This component uses an function within the template named list with the following syntax: list(listProperty, (listItem, insertIndex, updated) =&gt; htmlExpr, parentEl, renderParentOnEmptyList): . | The first parameter “listProperty” can be any regular or derived property to be rendered. | The second parameter is an arrow function that is called for each element of the array: . | Lambda parameter listItem references the current array element to be rendered. | Lambda Parameter insertIndex references the index of the current array element at insertion time. | Lambda Parameter updated tells if current element is rendered the first time or updated. | . | The htmlExpr to the right of the arrow of the lambda expression must return a html string and is used as html template for each element in the array. It transforms an array element into html. | Optional parameter parentEl allows to specify a parent element for the list, e.g. ul (default is div). | Optional parameter renderParentOnEmptyList causes the parent element of the list not to be rendered if the list should be empty. This is important for valid HTML, e.g. to avoid ul without li elements. | . Note . | All lambda parameters of list can be named as desired. | Parameters insertIndex and updated are optional. If you are interested in updated, but non on insertIndex use _ as parameter name. | . Next, lets take a look at the implementation of our person-input component. ",
+    "url": "http://localhost:4000/docs/getting-started/list-rendering.html#person-listjs",
+    "relUrl": "/docs/getting-started/list-rendering.html#person-listjs"
+  },"50": {
+    "doc": "List rendering",
+    "title": "person-input.js",
+    "content": "customElements.define(\"person-data-input\", class extends HofHtmlElement { value = \"\"; label = \"\"; change = null; constructor() { super(\"label\") } templates = html`${this.label}: &lt;input value=\"${this.value}\" onchange=\"${this.change}\" /&gt;` }) . This component is pretty simple. It renders an input element enclosed in a label. It displays the value provided from the parent and calls the change callback of the parent if the rendered value was changed by the user. This component is used two times by the parent person-data component: . &lt;person-data-input label=\"Name\" value=\"${this.selected.name}\" change=\"${(event) =&gt; this.selected.name = event.target.value}\"&gt;&lt;/person-data-input&gt; &lt;person-data-input label=\"Age\" value=\"${this.selected.age}\" change=\"${(event) =&gt; this.selected.age = event.target.value}\"&gt;&lt;/person-data-input&gt; . As a consequence, this component display the name or age of the person in selected and updates the property selected with input provided by the user. This means, property selected is synched with data displayed and updated by the user. Finally, lets take a look at the webpage. ",
+    "url": "http://localhost:4000/docs/getting-started/list-rendering.html#person-inputjs",
+    "relUrl": "/docs/getting-started/list-rendering.html#person-inputjs"
+  },"51": {
+    "doc": "List rendering",
+    "title": "person-list-app.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Hello world app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"person.js\"&gt;&lt;/script&gt; &lt;script src=\"person-input.js\"&gt;&lt;/script&gt; &lt;script src=\"person-list.js\"&gt;&lt;/script&gt; &lt;script src=\"person-data.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;person-data&gt;&lt;/person-data&gt; &lt;/body&gt; &lt;/html&gt; . And that’s it. You successfully created your first app that renders a list! . Note . You might think: Why do i have to use list if i can just use Array.map to generate output based on an array? The answer is runtime complexity: . | Method Array.map re-renders everything - even if only one item was added, updated or deleted. | Html method list provides O(1) in case of regular list properties and O(N) for derived properties in the worst case. This is far superior compared with approaches based on virtual dom comparisons. | . ",
+    "url": "http://localhost:4000/docs/getting-started/list-rendering.html#person-list-apphtml",
+    "relUrl": "/docs/getting-started/list-rendering.html#person-list-apphtml"
+  },"52": {
+    "doc": "Modern app sample",
+    "title": "Modern app sample",
+    "content": "To support autocomplete and syntax highlighting, we need to do the following things: . | Use tagged template literals html`htmlMarkup` and css`cssStyles` instead of pure template literals such as `htmlOrCss` within properties templates and styles of your HofHtmlElement component. | Create a separate js file for any HofHtmlComponent and use ES modules to import required components and export component classes. | . Lets update our person list app from earlier to use modular js. ",
+    "url": "http://localhost:4000/docs/modern-development/modern-app-sample.html",
+    "relUrl": "/docs/modern-development/modern-app-sample.html"
+  },"53": {
+    "doc": "Modern app sample",
+    "title": "person-list-app.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Hello world app&lt;/title&gt; &lt;script type=\"module\" src=\"app-content.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Hello world app&lt;/h1&gt; &lt;p&gt;This app has to be served with a web server such as Vscode live server to support js modules.&lt;/p&gt; &lt;app-content&gt;&lt;/app-content&gt; &lt;/body&gt; &lt;/html&gt; . Important: . | We only include one JavaScript file via script tag and use module as value for type. For this feature, however, the web page must be provided by a web server. | We now reference an app-content component as the root element for our whole app. | . ",
+    "url": "http://localhost:4000/docs/modern-development/modern-app-sample.html#person-list-apphtml",
+    "relUrl": "/docs/modern-development/modern-app-sample.html#person-list-apphtml"
+  },"54": {
+    "doc": "Modern app sample",
+    "title": "app-content.js",
+    "content": "import { HofHtmlElement, item, html } from \"../../lib/esm/hof.js\" import \"./person-data.js\"; export class AppContent extends HofHtmlElement { templates = [ () =&gt; html`&lt;person-data&gt;&lt;/person-data&gt;` ] } customElements.define(\"app-content\", AppContent); . Important: . | We created a component AppContent. Here, it only renders a person-data component. In practice, it could include the structure of the whole body of a webpage. | We explicitly import required classes and other HofHtmlElement components. | We export this class to make it available for other classes and the including webpage. | We use html tagged template to render html. Please note that you get autocomplete and syntax highlighting within html. You also get code documentation attached to person-data. | . ",
+    "url": "http://localhost:4000/docs/modern-development/modern-app-sample.html#app-contentjs",
+    "relUrl": "/docs/modern-development/modern-app-sample.html#app-contentjs"
+  },"55": {
+    "doc": "Modern app sample",
+    "title": "person-data.js",
+    "content": "import { HofHtmlElement, item, html } from \"../../lib/esm/hof.js\" import { Person } from \"./person.js\" import \"./person-input.js\" import \"./person-list.js\"; /** * Renders a ui to manage a list of persons, e.g. to add, update and delete persons of a list. */ export class PersonData extends HofHtmlElement { selected = new Person(); persons = [new Person(\"Alex\", 21), new Person(\"Chris\", 19), new Person(\"Mike\", 19)]; create() { this.selected = new Person(); } edit(person) { this.selected = { ...person }; } // Copy object to avoid live update on text change remove(person) { this.persons.splice(this.findIndex(person), 1); this.create(); } save() { if (this.selected.id) // Existing person? this.persons.splice(this.findIndex(this.selected), 1, this.selected); else this.persons.push(new Person(this.selected.name, this.selected.age)); this.create(); } findIndex(person) { return this.persons.findIndex(p =&gt; p.id == person.id); } templates = [ () =&gt; html` &lt;fieldset&gt;&lt;test&gt;&lt;/test&gt; &lt;person-data-input label=\"Name\" value=\"${this.selected.name}\" change=\"${(e) =&gt; this.selected.name = e.target.value}\"&gt;&lt;/person-data-input&gt; &lt;person-data-input label=\"Age\" value=\"${this.selected.age}\" change=\"${(e) =&gt; this.selected.age = e.target.value}\"&gt;&lt;/person-data-input&gt; &lt;button onclick=\"${this.save}\"&gt;Save&lt;/button&gt; &lt;/fieldset&gt; ${this.persons.length} persons in list &lt;person-data-list persons=\"${this.persons}\" edititem=\"${this.edit}\" deleteitem=\"${this.remove}\"&gt;&lt;/person-data-list&gt; &lt;a href=\"#\" onclick=\"${this.create}\"&gt;Create&lt;/a&gt; ` ] } customElements.define(\"person-data\", PersonData); . Important: . | We imported required components and exported our component person-data. | We used html to enable syntax highlighting and autocomplete. Please note that you get autocomplete and syntax highlighting including infos about supported properties of our component such as label and value. You also get code documentation attached to person-input. | . ",
+    "url": "http://localhost:4000/docs/modern-development/modern-app-sample.html#person-datajs",
+    "relUrl": "/docs/modern-development/modern-app-sample.html#person-datajs"
+  },"56": {
+    "doc": "Modern app sample",
+    "title": "person-input.js",
+    "content": "import { HofHtmlElement, item, html, css } from \"../../lib/esm/hof.js\"; /** * Renders a label and a corresponding input field. * @attr value - Editable value. * @attr label - Label for input field. * @attr change - Event handler that is fired after used changed value. */ export class PersonDataInput extends HofHtmlElement { value = \"\"; label = \"\"; change = null; constructor() { super(\"label\") } styles = css` input { color: blue; } `; templates = [ () =&gt; html`${this.label}: &lt;input value=\"${this.value}\" onchange=\"${this.change}\" /&gt;` ] } customElements.define(\"person-data-input\", PersonDataInput) . Important: . | We imported required components and exported our component person-input. | We added jsdoc for our properties. Currently it is required to add an @attr entry for each of the component attributes to make autocomplete work in other js files that use this component. In the future, the lit-plugin extension may be able to detect this automatically. | We used html to enable syntax highlighting and autocomplete for html. | We used css to enable syntax highlighting and autocomplete for css. | . ",
+    "url": "http://localhost:4000/docs/modern-development/modern-app-sample.html#person-inputjs",
+    "relUrl": "/docs/modern-development/modern-app-sample.html#person-inputjs"
+  },"57": {
+    "doc": "Modern app sample",
+    "title": "person-list.js",
+    "content": "import { HofHtmlElement, item, list, html } from \"../../lib/esm/hof.js\"; /** * Renders a list of persons with links to edit and delete a person * @attr persons - List of persons. * @attr edititem - Callback that is fired if a link to edit a person is clicked. * @attr deleteitem - Callback that is fired if a link to delete a person is clicked. */ export class PersonDataList extends HofHtmlElement { persons = []; edititem = null; deleteitem = null; templates = [ list(this.persons, (person) =&gt; html` &lt;li&gt; ${person.name} - ${person.age} years) [&lt;a href=\"#\" onclick=\"${() =&gt; this.edititem(person)}\"&gt;Edit&lt;/a&gt;] [&lt;a href=\"#\" onclick=\"${() =&gt; this.deleteitem(person)}\"&gt;Delete&lt;/a&gt;] &lt;/li&gt;` ) ]; } customElements.define(\"person-data-list\", PersonDataList) . Important: . | We imported required components and exported our component person-list. | We added jsdoc for our properties. | We used html to enable syntax highlighting and autocomplete for html. | . ",
+    "url": "http://localhost:4000/docs/modern-development/modern-app-sample.html#person-listjs",
+    "relUrl": "/docs/modern-development/modern-app-sample.html#person-listjs"
+  },"58": {
+    "doc": "Modern app sample",
+    "title": "Rendered webpage",
+    "content": "And that’s it. You have just updated your app to modular js and enabled support for a great developer experience with Hof.js! . Note . JavaScript modules require all files to be served from a webserver. For development purposes you can use vscode live server by opening the context menu for the html file of a Hof.js app in vscode an choosing Open with Live Server. ",
+    "url": "http://localhost:4000/docs/modern-development/modern-app-sample.html#rendered-webpage",
+    "relUrl": "/docs/modern-development/modern-app-sample.html#rendered-webpage"
+  },"59": {
+    "doc": "Nested components",
+    "title": "Nested components",
+    "content": "Even if you can, you should not write components that are too large, because this leads to poorly maintainable code. Instead, you should break a large component into several small ones that are merged by the formerly large one. This concept is called nested components. If we apply this approach recursively, we can build a whole app by nesting Hof.js components. To illustrate this idea, lets write a simple app that performs a live conversion between decimal and hex while the user is typing: . | The user should be able to enter either a decimal or a hex number and the updated value should appear in the other input field while he is typing. | If invalid values are entered instead of numbers, an error message should appear. | The app should look like the following (interactive) illustration. | . ",
+    "url": "http://localhost:4000/docs/getting-started/nested-components.html",
+    "relUrl": "/docs/getting-started/nested-components.html"
+  },"60": {
+    "doc": "Nested components",
+    "title": "Rendered webpage",
+    "content": "To make this work, we are going to divide the task into multiple components: . | Component number-converter-app: Implements html of whole webpage body. In its own template it contains a heading and a number-converter tag. | Component number-converter: Represents ui and logic of number conversion - it is composed of: . | a number-input.js component to display and input a decimal value | another number-input.js component to display and input a hex value | additional number-info component to render an error message if the entered value is not valid | . | . First, lets take a look at our webpage markup. This is pretty simple because the whole functionality and rendering html is encapsulated in our number-converter-app component. ",
+    "url": "http://localhost:4000/docs/getting-started/nested-components.html#rendered-webpage",
+    "relUrl": "/docs/getting-started/nested-components.html#rendered-webpage"
+  },"61": {
+    "doc": "Nested components",
+    "title": "number-converter-app.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Number converter app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"number-converter-app.js\"&gt;&lt;/script&gt; &lt;script src=\"number-converter.js\"&gt;&lt;/script&gt; &lt;script src=\"number-input.js\"&gt;&lt;/script&gt; &lt;script src=\"number-info.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;number-converter-app&gt;&lt;/number-converter-app&gt; &lt;/body&gt; &lt;/html&gt; . Note . This sample webpage contains a script tag for each component that is used either in the html markup of the webpage or in the template of another component. This is not recommended. In real applications, you should either bundle all script files so that only one script tag is needed for all components or, even better, rely on modular JavaScript. Hof.js supports this and includes an ESM version of the framework in its npm package. When switching to modular JavaScript, only the root component needs to be included in the HTML web page, since each component can itself include required other components via import. Our root component number-converter-app is similarly simple. It outputs a heading for our webpage / app and renders a number-converter component. ",
+    "url": "http://localhost:4000/docs/getting-started/nested-components.html#number-converter-apphtml",
+    "relUrl": "/docs/getting-started/nested-components.html#number-converter-apphtml"
+  },"62": {
+    "doc": "Nested components",
+    "title": "number-converter-app.js",
+    "content": "customElements.define(\"number-converter-app\", class extends HofHtmlElement { templates = html` &lt;h1&gt;Number converter app&lt;/h1&gt; &lt;number-converter&gt;&lt;/number-converter&gt; ` }) . Component number-converter is a lot more complex. It contains all state, logic and rendering for our number conversion: . | Property value represents the initial or last number entered by the user. | Property scale represents the number system of the initial or last number entered by the user. | Method change applies new values for properties value and scale. | In the template two number-input components and one number-info component are rendered: . | The first number-input renders a label for decimal input and an input field to accept a decimal value provided by the user. | The second number-input renders a label for hex input and an input field to accept a hex value provided by the user. | The number-info component shows a error if a number provided by the user is not valid. | . | . ",
+    "url": "http://localhost:4000/docs/getting-started/nested-components.html#number-converter-appjs",
+    "relUrl": "/docs/getting-started/nested-components.html#number-converter-appjs"
+  },"63": {
+    "doc": "Nested components",
+    "title": "number-converter.js",
+    "content": "customElements.define(\"number-converter\", class extends HofHtmlElement { value = 16; scale = \"d\"; change(value, scale) { this.value = value; this.scale = scale; } templates = html` &lt;div&gt; &lt;number-input scale=\"d\" value=\"${this.scale == 'd' ? this.value : parseInt(this.value, 16)}\" change=\"${this.change}\"&gt;&lt;/number-input&gt; &lt;number-input scale=\"h\" value=\"${this.scale == 'h' ? this.value : parseInt(this.value).toString(16)}\" change=\"${this.change}\"&gt;&lt;/number-input&gt; &lt;number-info value=\"${this.scale == 'd' ? this.value : parseInt(this.value, 16)}\"&gt;&lt;/number-info&gt; &lt;/div&gt; ` }) . State is passed down from our number-converter component to its child components: . | To reuse number-input for decimal and hex, different values for scale and value are passed down. | By checking the scale property, the format of the number entered and stored in the value property is checked. Then, depending on the input field, the current value is taken or converted to the other format and passed down to the correspondig number-input. | Similarly, the current format stored in scale is passed down so that the respective number-input can output a suitable label like “decimal” or “hex” in front of the input field to be rendered. | Please note that our change function is passed down. This can then be called from a number-input with the new value entered by the user and the number format of the respective number-input component. | Similarly, the decimal representation of the current value is passed down to number-info so that it can check the input to see if it is a valid number and output an error message if necessary. | . Now lets take a look at component number-input. ",
+    "url": "http://localhost:4000/docs/getting-started/nested-components.html#number-converterjs",
+    "relUrl": "/docs/getting-started/nested-components.html#number-converterjs"
+  },"64": {
+    "doc": "Nested components",
+    "title": "number-input.js",
+    "content": "customElements.define(\"number-input\", class extends HofHtmlElement { value = null; scale = null; change = null; _SCALE_NAMES = { d: 'Decimal', h: 'Hex' } templates = html` &lt;label&gt; ${this._SCALE_NAMES[this.scale]}: &lt;input value=\"${this.value}\" oninput=\"${(event) =&gt; this.change(event.target.value, this.scale)}\"/&gt; &lt;/label&gt; ` }) . The number-input component renders the current value and a label that shows “Decimal” or “Hex” depending on the scale property: . | This means the first number-input in the template of the number-converter component is going to render “Decimal” because value “d” was passed down. | In contrast, the second number-input renders the label “Hex” since the value “h” was passed down. | Finally, the value obtained from the parent number-converter tag is displayed in an input field. | . What happens now when the user types in a new value in an input field? . | First, the passed down change method from the parent number-converter is called. The current value provided by the user and number format of the input field are passed up to the number-converter. | As a consequence the parent number-converter updates its properties with the new value and scale received from the child number-input. | This leads to a rerendering of the parts of the number-converter template that depend on these properties. This affects the two number-input child components, which receive the new (converted) value via their properties and thus re-render the affected parts of their templates on their part. Finally, they show the new (converted) number. | . Finally, lets take a look at the component number-info. ",
+    "url": "http://localhost:4000/docs/getting-started/nested-components.html#number-inputjs",
+    "relUrl": "/docs/getting-started/nested-components.html#number-inputjs"
+  },"65": {
+    "doc": "Nested components",
+    "title": "number-info.js",
+    "content": "customElements.define(\"number-info\", class extends HofHtmlElement { value = null; templates = () =&gt; isNaN(this.value, this.scale) ? `&lt;p&gt;No valid number!&lt;/p&gt;` : `` }) . This component ist pretty simple. It accepts a decimal number and checks if its a valid one. If this is the case it returns an empty string. Otherwise an error message is rendered. And thats it. You have just implemented a simple app that demonstrates nesting of components and unidirectional dataflow! . What we have learned . | State (including references to event handlers) is passed down from parent to child components. | Events from a child component go up to its parent component. | This leads to the following unidirectional flow: . | Initial state of parent component is passed down and rendered by the child components. | If a user changes something by interacting with a child component, a parent component event handler is called with the new value(s) provided by the user. | As a result the parent updates its properties. | This leads to a rerendering of the parts of the parent component template that depend on these properties. These are the child components, which thus receive new values via their properties and thus in turn re-render the parts of their templates that depend on them. | . | . ",
+    "url": "http://localhost:4000/docs/getting-started/nested-components.html#number-infojs",
+    "relUrl": "/docs/getting-started/nested-components.html#number-infojs"
+  },"66": {
+    "doc": "No module build",
+    "title": "No module build",
+    "content": "To support older browsers without JS module support or to realize a small web application without requiring JavaScript modules, the nomodules variant can be used. ",
+    "url": "http://localhost:4000/docs/installation/nomodule.html",
+    "relUrl": "/docs/installation/nomodule.html"
+  },"67": {
+    "doc": "No module build",
+    "title": "Import statement",
+    "content": "&lt;script src=\"pathToNodeFolderOfApp/node_modules/@hofjs/hofjs/lib/nomodule/hof.js\"&gt;&lt;/script&gt; . ",
+    "url": "http://localhost:4000/docs/installation/nomodule.html#import-statement",
+    "relUrl": "/docs/installation/nomodule.html#import-statement"
+  },"68": {
+    "doc": "No module build",
+    "title": "Usage sample",
+    "content": "Minimal nomodules example . &lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Counter app&lt;/title&gt; &lt;script src=\"../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script&gt; // Inline JS - should be outsourced to external file. customElements.define(\"main-app\", class extends HofHtmlElement { templates = html`&lt;h1&gt;Hello at ${new Date()}&lt;/h1&gt;` }); &lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;main-app&gt;&lt;/main-app&gt; &lt;/body&gt; &lt;/html&gt; . ",
+    "url": "http://localhost:4000/docs/installation/nomodule.html#usage-sample",
+    "relUrl": "/docs/installation/nomodule.html#usage-sample"
+  },"69": {
+    "doc": "Regular routes",
+    "title": "Regular routes",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Personlist app (function style)&lt;/title&gt; &lt;script src=\"../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"lib/nomodule/hofrouter.js\"&gt;&lt;/script&gt; &lt;script&gt; class GlobalApp extends HofHtmlElement { constructor() { super(); HofRouter.configRoutes(this._shadow, 'router', { pageOverview: { url: \"/page-overview\", component: PageOverview }, pageDetails: { url: \"/page-details/:id\", component: PageDetails, aliases: [\"/pagedetails/:id\", \"/details/:id\"] }, pageOverview2: { url: \"/overview\", redirect: \"/page-overview\" }, default: { url: \"*\", redirect: \"router:pageOverview\" } }); } templates = html` &lt;h1&gt;Routing app (regular routes - requires server!)&lt;/h1&gt; &lt;a href=\"/page-overview\"&gt;Overview&lt;/a&gt; &lt;a href=\"/page-details/1?param1=Hello&amp;param2=World\"&gt;Details&lt;/a&gt; &lt;a href=\"/pagedetails/2?param1=Hello&amp;param2=World\"&gt;Details 2&lt;/a&gt; &lt;a href=\"/details/3?param1=Hello&amp;param2=World\"&gt;Details 3&lt;/a&gt; &lt;a href=\"router:pageDetails(id=4, param1=Hello, param2=World)\"&gt;Details 4&lt;/a&gt; &lt;div id=\"router\"&gt;&lt;/div&gt; ` } customElements.define(\"global-app\", GlobalApp); class PageOverview extends HofHtmlElement { count = 10; beforeRouting(newValue, oldValue) { // return false; } afterRouting(newValue, oldValue) { } templates = html` &lt;h1&gt;Overview page&lt;/h1&gt;&lt;div&gt;${new Date()}&lt;/div&gt; ` } customElements.define(\"page-overview\", PageOverview); class PageDetails extends HofHtmlElement { id = 0; constructor() { super(); HofRouter.configRoutes(this._shadow, 'subRouter', { tab1: { url: \"/page-details/:id/tab1\", component: PageDetailsTab, params: { tabId: 1 } }, tab2: { url: \"/page-details/:id/tab2\", component: PageDetailsTab, params: { tabId: 2 } }, }); } beforeRouting(newValue, oldValue) { // return false; } afterRouting(newValue, oldValue) { } templates = html` &lt;h1&gt;Details page&lt;/h1&gt; &lt;div&gt;Specified id: ${this.id}&lt;/div&gt; &lt;div&gt;Specified url: ${HofRouter.current.url}&lt;/div&gt; &lt;div&gt;Specified query: ${HofRouter.current.query}&lt;/div&gt; &lt;ul&gt; &lt;li&gt;param1: ${HofRouter.current.params.param1 || \"-\"}&lt;/li&gt; &lt;li&gt;param2: ${HofRouter.current.params.param2 || \"-\"}&lt;/li&gt; &lt;/ul&gt; &lt;h2&gt;Nested routing&lt;/h2&gt; &lt;a href=\"/page-details/${this.id}/tab1\"&gt;Tab 1&lt;/a&gt; &lt;a href=\"/page-details/${this.id}/tab2\"&gt;Tab 2&lt;/a&gt; &lt;button onclick=\"${() =&gt; HofRouter.go(-1)}\"&gt;Back&lt;/button&gt; &lt;button onclick=\"${() =&gt; HofRouter.push('/page-overview')}\"&gt;Overview&lt;/button&gt; &lt;a href=\"router:go(-1)\"&gt;Back&lt;/a&gt; &lt;a href=\"router:push('/pageOverview')\"&gt;Overview&lt;/a&gt; &lt;div id=\"subRouter\"&gt;&lt;/div&gt; ` } customElements.define(\"page-details\", PageDetails); class PageDetailsTab extends HofHtmlElement { tabId = 0; templates = html` &lt;h1&gt;Tab ${this.tabId}&lt;/h1&gt; &lt;div&gt;${new Date()}&lt;/div&gt; ` } customElements.define(\"page-details-tab\", PageDetailsTab) &lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;global-app&gt;&lt;/global-app&gt; &lt;/body&gt; &lt;/html&gt; . ",
+    "url": "http://localhost:4000/docs/routing/regular-routes.html",
+    "relUrl": "/docs/routing/regular-routes.html"
+  },"70": {
+    "doc": "Regular routes",
+    "title": "Rendered webpage",
+    "content": " ",
+    "url": "http://localhost:4000/docs/routing/regular-routes.html#rendered-webpage",
+    "relUrl": "/docs/routing/regular-routes.html#rendered-webpage"
+  },"71": {
+    "doc": "Render functions",
+    "title": "Render functions",
+    "content": "In the previous chapters we learned about two render functions that can be used inside templates. These functions are important because Hof.js does not use a virtual dom. It tracks data changes - including array modifications and deep object property changes - and does not take snapshots of ui to calculate ui changes. This means there is no virtual dom! . As a consequence Hof.js offers runtime complexity of O(1) for scalar property updates and for list property updates (it falls back to O(N) for mapped properties, however the factor is very small because it compares data changes and not ui changes in this case). You still can use arbitrary JavaScript expressions inside a html returning render function including Array.map. However it is recommended to use list if you render lists because there are significant performance benefits as mentioned above. If you need to render lists within other elements you should create separate HofHtmlElement based components because list can only be used as top level function within templates. This is by intention because good modularity should be encouraged. You should prefer a lot of small Hof.js components over one huge html generating component. However sometimes you want to create a list component that also renders regular non list html. This is supported by providing multiple render functions within templates and discussed further below. ",
+    "url": "http://localhost:4000/docs/getting-started/render-functions.html",
+    "relUrl": "/docs/getting-started/render-functions.html"
+  },"72": {
+    "doc": "Render functions",
+    "title": "Function item",
+    "content": "This function can be used to efficently render a single html fragment and has the following syntax: item((updated) =&gt; htmlExpr) or (updated) =&gt; htmlExpr (short form): . | Lambda parameter updated tells if its html output is rendered the first time or updated. | You can use this to conditionally render something, for instance. | Because this function is so important, you can omit its name and just provide the arrow function. | . Note . | Lambda parameter updated can be named as desired. | It is optional. If you are not interesed in this parameter, create an arrow function with empty parameters, e.g. () =&gt; \"\". | . Sample component . customElements.define(\"simple-counter\", class extends HofHtmlElement { count = 20; increment() { this.count++; } templates = html` &lt;div&gt;Count: ${this.count}&lt;/div&gt; &lt;button onclick=\"${this.increment}\"&gt;++&lt;/button&gt; &lt;button onclick=\"${() =&gt; this.count--}\"&gt;--&lt;/button&gt; ` }) . ",
+    "url": "http://localhost:4000/docs/getting-started/render-functions.html#function-item",
+    "relUrl": "/docs/getting-started/render-functions.html#function-item"
+  },"73": {
+    "doc": "Render functions",
+    "title": "Function list",
+    "content": "This function can be used to efficiently render list properties and has the following syntax: list(listProperty, (listItem, insertIndex, updated) =&gt; htmlExpr, parentEl, renderParentOnEmptyList): . | The first parameter “listProperty” can be any regular or derived property to be rendered. | The second parameter is an arrow function that is called for each element of the array: . | Lambda parameter listItem references the current array element to be rendered. | Lambda Parameter insertIndex references the index of the current array element at insertion time. | Lambda Parameter updated tells if current element is rendered the first time or updated. | . | The htmlExpr to the right of the arrow of the lambda expression must return a html string and is used as html template for each element in the array. It transforms an array element into html. | Optional parameter parentEl allows to specify a parent element for the list, e.g. ul (default is div). | Optional parameter renderParentOnEmptyList causes the parent element of the list not to be rendered if the list should be empty. This is important for valid HTML, e.g. to avoid ul without li elements. | . Note . | All lambda parameters of list can be named as desired. | Parameters insertIndex and updated are optional. If you are interested in updated, but non on insertIndex use _ as parameter name. | . Sample component . customElements.define(\"person-data-list\", class extends HofHtmlElement { // Property persons = [new Person(\"Alex\", 21), new Person(\"Chris\", 19), new Person(\"Mike\", 19)]; // Helper Function getBirthday(person) { let birthday = new Date(); birthday.setFullYear(birthday.getFullYear() - person.age); return birthday.toLocaleDateString(); } edititem = null; // Callback from parent deleteitem = null; // Callback from parent templates = list(this.persons, (person, initialInsertIndex, updated) =&gt; html` &lt;li&gt; [${initialInsertIndex}] ${person.name} - ${person.age} years (birthday: ${this.getBirthday(person)}) [&lt;a href=\"#\" onclick=\"${() =&gt; this.edititem(person)}\"&gt;Edit&lt;/a&gt;] [&lt;a href=\"#\" onclick=\"${() =&gt; this.deleteitem(person)}\"&gt;Delete&lt;/a&gt;] ${updated ? \"(update)\" : \"\"} &lt;/li&gt;`, \"ul\" ) }) . ",
+    "url": "http://localhost:4000/docs/getting-started/render-functions.html#function-list",
+    "relUrl": "/docs/getting-started/render-functions.html#function-list"
+  },"74": {
+    "doc": "Render functions",
+    "title": "More html render functions",
+    "content": "Currently there is no support for more render functions. The render functions provided are the basic constructs because they support scalar and list properties. Conditional render functions etc. are currently not supported because they can easily be replaced with the following approaches: . | Conditional element rendering can be easily achieved by using ternary operator: () =&gt; this.count &lt;= 20 ? \"Regular render expression\" : \"\" . | Conditional list rendering can be easily achieved by writing a derived list property with a condition to filter out some or all elements in certain cases: customElements.define(\"person-data-list\", class extends HofHtmlElement { persons = [new Person(\"Alex\", 21), new Person(\"Chris\", 19), new Person(\"Mike\", 19)]; get _filteredPersons() { return this.persons.filter(p =&gt; p.age &gt; 20) } templates = list(this._filteredPersons, (person) =&gt; html` &lt;li&gt; ${person.name} - ${person.age} years [&lt;a href=\"#\" onclick=\"${() =&gt; this.edititem(person)}\"&gt;Edit&lt;/a&gt;] [&lt;a href=\"#\" onclick=\"${() =&gt; this.deleteitem(person)}\"&gt;Delete&lt;/a&gt;] &lt;/li&gt;`, \"ul\" ) }) . | . ",
+    "url": "http://localhost:4000/docs/getting-started/render-functions.html#more-html-render-functions",
+    "relUrl": "/docs/getting-started/render-functions.html#more-html-render-functions"
+  },"75": {
+    "doc": "Render functions",
+    "title": "Multiple render functions",
+    "content": "As mentioned above, sometimes you want to create a list component that also renders regular non list html. This is supported by providing multiple render functions within the templates array. Sample . templates = [ () =&gt; html`&lt;h2&gt;Filtered list&lt;/h2&gt;`, list(this._filteredPersons, (person, index, updated) =&gt; html` &lt;li&gt; [${index+1}] ${person.name} - ${person.age} years (updated: ${updated}) [&lt;a href=\"#\" onclick=\"${() =&gt; this.edititem(person)}\"&gt;Edit&lt;/a&gt;] [&lt;a href=\"#\" onclick=\"${() =&gt; this.deleteitem(person)}\"&gt;Delete&lt;/a&gt;] &lt;/li&gt;`, \"ul\" ), () =&gt; html`&lt;h2&gt;Full list&lt;/h2&gt;`, list(this.persons, (person, index, updated) =&gt; html` &lt;li&gt; ${person.name} - ${person.age} years (birthday: ${this.getBirthday(person)}) [&lt;a href=\"#\" onclick=\"${() =&gt; this.edititem(person)}\"&gt;Edit&lt;/a&gt;] [&lt;a href=\"#\" onclick=\"${() =&gt; this.deleteitem(person)}\"&gt;Delete&lt;/a&gt;] ${updated ? \"(update)\" : \"\"} &lt;/li&gt;`, \"ul\" ) ] . ",
+    "url": "http://localhost:4000/docs/getting-started/render-functions.html#multiple-render-functions",
+    "relUrl": "/docs/getting-started/render-functions.html#multiple-render-functions"
+  },"76": {
+    "doc": "State hooks",
+    "title": "State hooks",
+    "content": "Sometimes, when a property changes, you not only want to update derived properties and the UI, but also execute additional arbitrary code: . | For example, a requirement may be to download new data via a REST service on a value change. | Another example would be checking for allowed values and refusing to accept a value from a component. This could be useful in routing scenarios, for example, where a routing component only performs a forwarding if the user has the appropriate authorization. | Simple logging of value changes is also a possible requirement. | . Hof.js supports this with so-called state hooks. Whenever a property is changed, methods of a component or an externalized store object that correspond to a certain naming scheme are called, if defined by the developer. The following basic hooks are supported: . | &lt;propertyName&gt;BeforeChanged(newValue, oldValue): This method is called when a property propertyName is to be updated. If it returns nothing or true, the new value is accepted, in case of false it is rejected. | &lt;propertyName&gt;AfterChanged(newValue, oldValue): This method is called after a property propertyName has been set to a new value. No return value is expected. | . Let’s extend our simple counter component from an earlier exercise to support some of these hooks. ",
+    "url": "http://localhost:4000/docs/getting-started/state-hooks.html",
+    "relUrl": "/docs/getting-started/state-hooks.html"
+  },"77": {
+    "doc": "State hooks",
+    "title": "simple-counter-with-hooks.js",
+    "content": "customElements.define(\"simple-counter\", class extends HofHtmlElement { count = 10; countBeforeChanged(newValue, oldValue) { return newValue &lt;= 20; } countAfterChanged(newValue, oldValue) { console.log(`count changed from ${oldValue} -&gt; ${newValue}`); } get doubled() { return this.count * 2; } increment() { this.count++; } templates = html` &lt;div&gt;Count: ${this.count}&lt;/div&gt; &lt;div&gt;Inverse count: ${-this.count}&lt;/div&gt; &lt;div&gt;Doubled count: ${this.doubled}&lt;/div&gt; &lt;button onclick=\"${this.increment}\"&gt;++&lt;/button&gt; &lt;button onclick=\"${() =&gt; this.count--}\"&gt;--&lt;/button&gt; ` }) . In this example, if the value of count reaches 20, additional clicks on the increment button have no effect because hook countBeforeChanged returns false in that case. Additionally, countAfterChanged is only called if a value change happened. This means after count reaches 20, this hook is no longer called. Note . | Before-Hooks are not required to return a value. If they don’t, this is interpreted as true. If true is returned, the new value is applied to the property. If they return false on a value change, the new value is discared and not applied to the property. | After-Hooks don’t support return values because they are called after a value changed has occured. | . The following webpage can be used to render our updated counter component. ",
+    "url": "http://localhost:4000/docs/getting-started/state-hooks.html#simple-counter-with-hooksjs",
+    "relUrl": "/docs/getting-started/state-hooks.html#simple-counter-with-hooksjs"
+  },"78": {
+    "doc": "State hooks",
+    "title": "simple-counter-with-hooks.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Simple counter with hooks app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"simple-counter-with-hooks.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Simple counter with hooks app&lt;/h1&gt; &lt;simple-counter&gt;&lt;/simple-counter&gt; &lt;/body&gt; &lt;/html&gt; . If you want to try it out, interact with the following rendered app. Open the Developer Tools of your browser to see the logging output of our After-Hook. ",
+    "url": "http://localhost:4000/docs/getting-started/state-hooks.html#simple-counter-with-hookshtml",
+    "relUrl": "/docs/getting-started/state-hooks.html#simple-counter-with-hookshtml"
+  },"79": {
+    "doc": "State hooks",
+    "title": "Rendered webpage",
+    "content": "In addition, the following advanced hooks are supported: . | &lt;propertyName&gt;BeforePropertyChanged(prop, newValue, oldValue): This function is called when an arbitrarily deeply nested subproperty of a property named propertyName is to be updated. If nothing is returned or true, the value change is accepted, in case of false it is rejected. This method can be used for complex objects or store objects to react to changes in their subproperties. | &lt;propertyName&gt;AfterPropertyChanged(prop, newValue, oldValue): This function is called after an arbitrarily deeply nested subproperty of a property named propertyName has been set to a new value. No return value is expected. This method can be used for complex objects or store objects to react to changes in their subproperties. | . Let’s extend our store based counter component from an earlier exercise to practice some of these advanced hooks. First, let’s customize the store object and extend it with the hooks that we placed directly in the component in the previous example. ",
+    "url": "http://localhost:4000/docs/getting-started/state-hooks.html#rendered-webpage",
+    "relUrl": "/docs/getting-started/state-hooks.html#rendered-webpage"
+  },"80": {
+    "doc": "State hooks",
+    "title": "counter-store-with-hooks.js",
+    "content": "const counterStoreWithHooks = { count: 1, countBeforeChanged(newValue, oldValue) { return newValue &lt;= 20; }, countAfterChanged(newValue, oldValue) { console.log(`count changed from ${oldValue} -&gt; ${newValue}`); }, get doubled() { return this.count * 2; }, increment() { this.count++; } } . As you can see, nothing significant has changed in the implementation of the hooks by externalizing them to the store object. Next, let’s take a look at the Counter component, which now uses the store with its hooks. ",
+    "url": "http://localhost:4000/docs/getting-started/state-hooks.html#counter-store-with-hooksjs",
+    "relUrl": "/docs/getting-started/state-hooks.html#counter-store-with-hooksjs"
+  },"81": {
+    "doc": "State hooks",
+    "title": "simple-counter-with-store.js",
+    "content": "customElements.define(\"simple-counter\", class extends HofHtmlElement { sharedCounter = counterStoreWithHooks; sharedCounterBeforePropertyChanged(newValue, oldValue) { return Math.random() &lt; 0.5; } sharedCounterAfterPropertyChanged(property, newValue, oldValue) { console.log(`sharedCounter.${property} changed from ${oldValue} -&gt; ${newValue}`); } templates = html` &lt;div&gt;Count: ${this.sharedCounter.count}&lt;/div&gt; &lt;div&gt;Inverse count: ${-this.sharedCounter.count}&lt;/div&gt; &lt;div&gt;Doubled count: ${this.sharedCounter.doubled}&lt;/div&gt; &lt;button onclick=\"${this.sharedCounter.increment}\"&gt;++&lt;/button&gt; &lt;button onclick=\"${() =&gt; this.sharedCounter.count--}\"&gt;--&lt;/button&gt; ` }) . We now no longer use a component count property directly as in a previous exercise, but reference the count property of an external object. In addition, we have also defined two hooks here that are triggered when subproperties of the external object are changed. Again, in the before hook, we have the option to reject value changes of a subproperty by returning false in the respective case. In our example, value changes are accepted or rejected depending on a random value. Below you can see the HTML markup for the realized application. ",
+    "url": "http://localhost:4000/docs/getting-started/state-hooks.html#simple-counter-with-storejs",
+    "relUrl": "/docs/getting-started/state-hooks.html#simple-counter-with-storejs"
+  },"82": {
+    "doc": "State hooks",
+    "title": "simple-counter-with-hooks2.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Simple counter with store and hooks app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"counter-store-with-hooks.js\"&gt;&lt;/script&gt; &lt;script src=\"simple-counter-with-store.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Simple counter with store and hooks app&lt;/h1&gt; &lt;simple-counter&gt;&lt;/simple-counter&gt; &lt;simple-counter&gt;&lt;/simple-counter&gt; &lt;/body&gt; &lt;/html&gt; . It’s best to just try out the app rendered below. ",
+    "url": "http://localhost:4000/docs/getting-started/state-hooks.html#simple-counter-with-hooks2html",
+    "relUrl": "/docs/getting-started/state-hooks.html#simple-counter-with-hooks2html"
+  },"83": {
+    "doc": "State hooks",
+    "title": "Rendered webpage",
+    "content": "If you use one of the buttons, the count value is changed in both components as before because they access the same externalized store object. Also, you will see console output from both the After hook at the store object level and the After property hook at the component level. In addition, both the before hook at the store object level and the before property hook at the component level decide if a new property value is applied: . | If Math.random &lt; 0.5 evaluates to true, the value change is accepted, otherwise rejected. I.e. a value change is not performed for all button clicks. | When the value 20 is reached, no more value changes are accepted. | . The shown concept is very powerful, because it works in components as well as in objects referenced by components. Also, subproperties nested arbitrarily deep are supported. Note . Hooks are only supported for regular properties. Value changes of derived properties cannot be intercepted or rejected by design. ",
+    "url": "http://localhost:4000/docs/getting-started/state-hooks.html#rendered-webpage-1",
+    "relUrl": "/docs/getting-started/state-hooks.html#rendered-webpage-1"
+  },"84": {
+    "doc": "Stateful components",
+    "title": "Stateful components",
+    "content": "Stateless components always return the same output if the same input is provided. Our my-greeter sample from the previous section is a good example. It simple renders a welcome message and a date based on the name provided or omitted. This is enough for simple render tasks. However, often a more dynamic approach is required, especially if user interaction has to be supported. Lets take a look at these concept called stateful components by implementing a small counter app. First lets create a file called simple-counter.js with the following code: . ",
+    "url": "http://localhost:4000/docs/getting-started/stateful-components.html",
+    "relUrl": "/docs/getting-started/stateful-components.html"
+  },"85": {
+    "doc": "Stateful components",
+    "title": "simple-counter.js",
+    "content": "customElements.define(\"simple-counter\", class extends HofHtmlElement { count = 20; increment() { this.count++; } templates = html` &lt;div&gt;Count: ${this.count}&lt;/div&gt; &lt;button onclick=\"${this.increment}\"&gt;++&lt;/button&gt; &lt;button onclick=\"${() =&gt; this.count--}\"&gt;--&lt;/button&gt; ` }) . This defines a new component named simple-counter: . | Within templates, we specified a single render function that returns the value of a count property we defined in our new component. | In the template we have also defined two buttons: . | The first button, when clicked, calls method increment, which increases count by 1. | The second button decreases count. But here we have specified the method inline. This is possible with simple methods. | . | . Now, when a user clicks a button, count is increased or decreased: . | As a consequence the parts of the UI that reference this property in the template are automatically updated. | In this example, this is the content of the first div element. | . Note . Hof.js does not use a virtual dom and does not compare dom states to calculate changes: . | It uses observability to update parts of ui that depend on changed data. | As a consequence, in many cases it provides O(1) for updates in the worst case. This is far superior compared with approaches based on virtual dom comparisons. | . Now lets use that newly created tag in a simple web page. ",
+    "url": "http://localhost:4000/docs/getting-started/stateful-components.html#simple-counterjs",
+    "relUrl": "/docs/getting-started/stateful-components.html#simple-counterjs"
+  },"86": {
+    "doc": "Stateful components",
+    "title": "simple-counter.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Simple counter app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"simple-counter.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Simple counter app&lt;/h1&gt; &lt;simple-counter&gt;&lt;/simple-counter&gt; &lt;/body&gt; &lt;/html&gt; . This gives us the following rendering output: . ",
+    "url": "http://localhost:4000/docs/getting-started/stateful-components.html#simple-counterhtml",
+    "relUrl": "/docs/getting-started/stateful-components.html#simple-counterhtml"
+  },"87": {
+    "doc": "Stateful components",
+    "title": "Rendered webpage",
+    "content": "And that’s it. You have just created your first stateful Hof.js component! . Note . | Html helper function item() supports an optional lambda parameter updated that tells if its html output is rendered the first time or updated. You can use this to conditionally render something, for instance. | This lambda parameter can be named as desired. You just have to use the same parameter name in the html expression to make it work. | Sample: templates = (updated) =&gt; html` &lt;div&gt;Count: ${this.count} (${updated})&lt;/div&gt; &lt;button onclick=\"${this.increment}\"&gt;++&lt;/button&gt; &lt;button onclick=\"${() =&gt; this.count--}\"&gt;--&lt;/button&gt; ` . | . ",
+    "url": "http://localhost:4000/docs/getting-started/stateful-components.html#rendered-webpage",
+    "relUrl": "/docs/getting-started/stateful-components.html#rendered-webpage"
+  },"88": {
+    "doc": "Stateful components",
+    "title": "Multiple state properties",
+    "content": "Next we are going to extend our component to enable the output of the counter value not only in decimal but also in binary and hex. For this we adapt the component as follows. customElements.define(\"simple-counter\", class extends HofHtmlElement { count = 20; base = 10; increment() { this.count++; } toNumberSystem(value, base) { return value.toString(parseInt(base)); } templates = html` &lt;div&gt; Count: ${this.toNumberSystem(this.count, this.base)} &lt;select value=\"${this.base}\" onchange=\"${(event) =&gt; this.base = event.target.value}\"&gt; &lt;option value=\"2\"&gt;Binary&lt;/option&gt; &lt;option value=\"10\"&gt;Decimal&lt;/option&gt; &lt;option value=\"16\"&gt;Hex&lt;/option&gt; &lt;/select&gt; &lt;/div&gt; &lt;button onclick=\"${this.increment}\"&gt;++&lt;/button&gt; &lt;button onclick=\"${() =&gt; this.count--}\"&gt;--&lt;/button&gt; ` }) . Here we have made the following changes: . | A new property base represents the selected base of the number system (2 for binary …). | We no longer output count directly, but call a method toNumberSystem to output count in the chosen format. | In the template we added a dropdown for different number systems. | The current value of base is used as initial selection. | If the user selects a dropdown item, the onchange event is fired. We provided an inline function that changes property base to the user’s selection. | Alternatively, we could have defined a method change(event) in our component and then referenced it via onchange=\"${this.change}\". This is recommend for more complex event handlers. | Please note here that one gets a reference to the triggering UI element (via event.target) or its value (via event.target.value) via the automatically provided event handler parameter event. | . | . In the html markup, we didn’t change a thing. ",
+    "url": "http://localhost:4000/docs/getting-started/stateful-components.html#multiple-state-properties",
+    "relUrl": "/docs/getting-started/stateful-components.html#multiple-state-properties"
+  },"89": {
+    "doc": "Stateful components",
+    "title": "Rendered webpage with updated counter component",
+    "content": "If the user selects another number system in the dropdown list, the base property is updated and thus the part of the template that depends on it is re-rendered, in this case ${this.toNumberSystem(this.count, this.base)} is re-rendered and thus the value displayed after Count: is updated. This all happens completely automatically. Note . The UI is updated on a property change only if the component template references the property. In our example, we have passed this.count and this.base to our helper function toNumberSystem. If we called this function without parameters from the template and referenced this.count and this.base only in our function, there would be no automatic update on property changes because methods are evaluated only once or when explicitly called. This is by intention. If you want automatic updates of computed expressions, there is a concept called derived properties that provides this kind of magic. We will take a look into it in the next step. ",
+    "url": "http://localhost:4000/docs/getting-started/stateful-components.html#rendered-webpage-with-updated-counter-component",
+    "relUrl": "/docs/getting-started/stateful-components.html#rendered-webpage-with-updated-counter-component"
+  },"90": {
+    "doc": "Store objects",
+    "title": "Store objects",
+    "content": "Usually one wants unidirectional data flow, i.e. parent components pass state to child components and these return changes in the form of events to the parent. The reason for this is, . | parent components can represent a kind of single source of truth and the data flow can thus be structured and easily traced top-down and | that code can be implemented more robust and less error-prone than with approaches involving e.g. two-way data binding, since mutual dependencies and cycles of updates can be avoided. | . However, sometimes you need shared state between various components that are placed on different levels of a deep hierarchy of nested components. This is illustrated in the following figure. Root component - child component 1 - grandchild component 1.1 - great grandchild component 1.1.1 - great grandchild component 1.1.2 - ... - ... - ... - child component N - ... - grandchild component N.M - great grandchild component N.M.1 - great great grandchild component N.M.1.1 . If component 1.1.2 and component N.M.1.1 need access to the same data, it would be necessary to pass the object from the root through umpteen components on the path in between: . | All components on the path between the root component and the component requiring the data would have to be equipped with additional properties to pass a value downward. | The same applies to callbacks that the child should invoke to pass new values up to the root. | . Summing up . | Additional properties required and the chain of pass down expressions would significantly complicate the code and make maintenance more difficult. | Consequently, this approach is not suitable for sharing data between components at widely separated levels of a deep hierarchy of nested components. | . ",
+    "url": "http://localhost:4000/docs/getting-started/store-objects.html",
+    "relUrl": "/docs/getting-started/store-objects.html"
+  },"91": {
+    "doc": "Store objects",
+    "title": "Store objects coming to the resuce",
+    "content": "Some frameworks offer a concept called stores to solve the problem depicted above. Usually, this means using an additional library that makes objects accessible in different components via an non standard mechanism or by using some kind of dependency injection. Often, this does not fit well with the respective framework and developers need to learn an additional paradigm. Hof.js does not include a separate store concept, because its deep observability functionality makes concepts like that obsolete. Simple objects can be used to externalize and share state. In the following, we will take a closer look at this using an example. First, lets create a shared object: . ",
+    "url": "http://localhost:4000/docs/getting-started/store-objects.html#store-objects-coming-to-the-resuce",
+    "relUrl": "/docs/getting-started/store-objects.html#store-objects-coming-to-the-resuce"
+  },"92": {
+    "doc": "Store objects",
+    "title": "counter-store.js",
+    "content": "const counterStore = { count: 1, get doubled() { return this.count * 2; }, increment() { this.count++; } } . As you can see, we simply pulled all the state properties and methods that can change the state out of our component simple-counter and externalized them into an object called ´counterStore´. This includes our derived property doubled. Important . | Don’t use an array as store object (e.g. storeArray = []) because this does not get observed in all situations. | Instead, always define an object and include your array, e.g. storeObject = { someArray: [] }. | . Now lets take a look at our updated simple-counter component. ",
+    "url": "http://localhost:4000/docs/getting-started/store-objects.html#counter-storejs",
+    "relUrl": "/docs/getting-started/store-objects.html#counter-storejs"
+  },"93": {
+    "doc": "Store objects",
+    "title": "simple-counter-with-store.js",
+    "content": "customElements.define(\"simple-counter\", class extends HofHtmlElement { sharedCounter = counterStore; templates = html` &lt;div&gt;Count: ${this.sharedCounter.count}&lt;/div&gt; &lt;div&gt;Inverse count: ${-this.sharedCounter.count}&lt;/div&gt; &lt;div&gt;Doubled count: ${this.sharedCounter.doubled}&lt;/div&gt; &lt;button onclick=\"${this.sharedCounter.increment}\"&gt;++&lt;/button&gt; &lt;button onclick=\"${() =&gt; this.sharedCounter.count--}\"&gt;--&lt;/button&gt; ` }) . It’s really that simple: . | We added a property sharedCounter that references our externalized object. | Additionally, we changed all references in the template to include sharedCounter as parent object. | . If you use this component in a simple webpage and test the app, everything works as expected - even externalized derived properties. And the most important part: If multiple instances of this component (or other components that use the same store object) are used, they share the same state. This means if you click a increment or decrement button of one component all changes are reflected on the other one. Below you can see a simple web page that contains two counter components. When the value of one of the counters is changed, the new value is immediately reflected in the other one. ",
+    "url": "http://localhost:4000/docs/getting-started/store-objects.html#simple-counter-with-storejs",
+    "relUrl": "/docs/getting-started/store-objects.html#simple-counter-with-storejs"
+  },"94": {
+    "doc": "Store objects",
+    "title": "simple-counter-with-store.html",
+    "content": "&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;Simple counter with store app&lt;/title&gt; &lt;script src=\"../../lib/nomodule/hof.js\"&gt;&lt;/script&gt; &lt;script src=\"counter-store.js\"&gt;&lt;/script&gt; &lt;script src=\"simple-counter-with-store.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;Simple counter with store app&lt;/h1&gt; &lt;simple-counter&gt;&lt;/simple-counter&gt; &lt;simple-counter&gt;&lt;/simple-counter&gt; &lt;/body&gt; &lt;/html&gt; . ",
+    "url": "http://localhost:4000/docs/getting-started/store-objects.html#simple-counter-with-storehtml",
+    "relUrl": "/docs/getting-started/store-objects.html#simple-counter-with-storehtml"
+  },"95": {
+    "doc": "Store objects",
+    "title": "Rendered webpage",
+    "content": "What we have learned . | Usually, you want unidirectional data flow because it makes for robust and easily traceable code. | However, if you have a complex app with a deep hierarchy of nested components and the requirement of shared state between components on different levels of the hierarchy, it is better to use a externalized shared object. | Hof.js supports all features of components in referenced externalized objects, too. This makes it extremely easy to share state because no new concepts have to be learned and no additional libraries are required. | . ",
+    "url": "http://localhost:4000/docs/getting-started/store-objects.html#rendered-webpage",
+    "relUrl": "/docs/getting-started/store-objects.html#rendered-webpage"
+  },"96": {
+    "doc": "Visual Studio Code",
+    "title": "Visual Studio Code",
+    "content": "Hof.js supports autocomplete for your HofHtmlElement components including templates and styles within Visual Studio Code. To enable support, you need to do the following: . | Install Visual Studio Code extension lit-plugin. | Modify workspace settings for lit-plugin to enable strict mode and disable complex property warning (because Hof.js supports this without performance problems in contrast to other frameworks). | Optionally, disable missing input rule of lit-plugin if you use the nomodule build of Hof.js. | . Additionally, to support attribute detection, you have to add jsdoc to your HofHtmlElement class. This allows lit-plugin to provide autocomplete for valid attributes of your HofHtmlElement component. This is described later in this tutorial. ",
+    "url": "http://localhost:4000/docs/installation/visual-studio-code.html",
+    "relUrl": "/docs/installation/visual-studio-code.html"
+  },"97": {
+    "doc": "Visual Studio Code",
+    "title": "1. Installation of lit-plugin extension",
+    "content": ". ",
+    "url": "http://localhost:4000/docs/installation/visual-studio-code.html#1-installation-of-lit-plugin-extension",
+    "relUrl": "/docs/installation/visual-studio-code.html#1-installation-of-lit-plugin-extension"
+  },"98": {
+    "doc": "Visual Studio Code",
+    "title": "2. General configuration of lit-plugin extension",
+    "content": ". ",
+    "url": "http://localhost:4000/docs/installation/visual-studio-code.html#2-general-configuration-of-lit-plugin-extension",
+    "relUrl": "/docs/installation/visual-studio-code.html#2-general-configuration-of-lit-plugin-extension"
+  },"99": {
+    "doc": "Visual Studio Code",
+    "title": "3. Optional configuration of lit-plugin extension",
+    "content": "This step is only required if you use the nomodule build of Hof.js. If you do use the esm build of Hof.js and use js modules (recommended for modern apps) don’t change this setting to off because it checks for missing import statements regarding HofHtmlElement components. ",
+    "url": "http://localhost:4000/docs/installation/visual-studio-code.html#3-optional-configuration-of-lit-plugin-extension",
+    "relUrl": "/docs/installation/visual-studio-code.html#3-optional-configuration-of-lit-plugin-extension"
+  },"100": {
+    "doc": "Visual Studio Code",
+    "title": "4. Create modern apps with modular Hof.js",
+    "content": "To get you started with modular Hof.js app development, choose “Modern development” in the side navigation. ",
+    "url": "http://localhost:4000/docs/installation/visual-studio-code.html#4-create-modern-apps-with-modular-hofjs",
+    "relUrl": "/docs/installation/visual-studio-code.html#4-create-modern-apps-with-modular-hofjs"
+  }
+}
