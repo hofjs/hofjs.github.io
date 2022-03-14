@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal demo</title>
+    <script src="../lib/nomodule/hof.js"></script>
+    <script>
+        // Inline JS - should be outsourced to external file.
+        customElements.define("main-app", class extends HofHtmlElement {
+            templates = html`<h1>Hello at ${new Date()}</h1>`
+        });
+    </script>
+</head>
+<body>
+    <main-app></main-app>
+</body>
+</html>

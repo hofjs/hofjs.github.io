@@ -1,0 +1,18 @@
+// Component styles
+customElements.define("person-data-input", class extends HofHtmlElement {
+    value = "";
+    label = "";
+    change = null;
+
+    constructor() {
+        super("label")
+    }
+
+    styles = css`
+        input { color: blue; }
+    `;
+
+    templates = html`
+        ${this.label}: <input value="${this.value}" onchange="${this.change}" />
+    `
+})
