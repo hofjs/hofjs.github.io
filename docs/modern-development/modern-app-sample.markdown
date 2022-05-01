@@ -108,6 +108,10 @@ Important:
 
 ![lelement attribute autocomplete](element-autocomplete2.png)
 
+> **Note**
+>
+> This framework currently does **not support direct referencing of imported entities within templates**. This means that you can **only reference elements of the component class by using `this` or  reference elements of global scope without any prefix**. However you can **access any imported elements from within functions defined in your component class**.
+
 ## person-input.js
 
 ```js
