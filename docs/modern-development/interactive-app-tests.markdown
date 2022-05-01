@@ -10,8 +10,6 @@ Since Hof.js, unlike other frameworks, does not compare UI snapshots, but the da
 
 To demonstrate this, the code of an app that uses complex derived properties will be shown below. Afterwards, it will be shown how to test changes in the data in the browser.
 
-// debugging aktivieren
-
 **Lets update our person list app from earlier to use modular js.**
 
 ## person-list-app.html
